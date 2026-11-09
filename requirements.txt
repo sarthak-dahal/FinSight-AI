@@ -1,0 +1,36 @@
+# FinSight AI - Requirements
+
+# Core Python libraries
+python>=3.8
+numpy
+pandas
+sqlite3
+
+# Web scraping and parsing
+beautifulsoup4
+lxml
+
+# Embeddings and vector search
+sentence-transformers
+faiss-cpu
+
+# LLM and local inference
+ollama
+
+# API and web framework
+fastapi
+uvicorn
+streamlit
+
+# Database
+sqlalchemy
+
+# Testing
+pytest
+
+# Data processing
+openpyxl
+pdfplumber
+
+# Evaluation
+ragas
