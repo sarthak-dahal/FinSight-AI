@@ -166,7 +166,11 @@ def extract_xbrl_facts(html_path: Path, manifest: dict) -> list:
             "unit": unit,
             "period_start": ctx["period_start"],
             "period_end": ctx["period_end"],
-            "fiscal_year": manifest["fiscal_year"],
+            # Fiscal year of the *period*, not the filing: each 10-K restates 2-3 prior
+            # years. Labelled by the calendar year the period ends in, which matches how
+            # MSFT (Jun), AAPL (Sep) and NVDA (late Jan) name their fiscal years.
+            # Revisit for companies whose FY ends in early January (e.g. retailers).
+            "fiscal_year": ctx["period_end"][:4],
             "filing_date": manifest["filing_date"],
             "form_type": manifest["form_type"],
             "accession_number": manifest["accession_number"],

@@ -86,7 +86,7 @@ def insert_chunks(conn: sqlite3.Connection, chunks: list):
 
 def insert_facts(conn: sqlite3.Connection, facts: list):
     sql = """
-        INSERT OR IGNORE INTO financial_facts
+        INSERT INTO financial_facts
             (company, ticker, cik, concept, metric_label,
              value, unit, period_start, period_end,
              fiscal_year, filing_date, form_type,
@@ -96,6 +96,16 @@ def insert_facts(conn: sqlite3.Connection, facts: list):
              :value, :unit, :period_start, :period_end,
              :fiscal_year, :filing_date, :form_type,
              :accession_number, :source_url)
+        -- Later filings restate prior periods (e.g. NVDA's 10:1 split in 2024 restated
+        -- EPS), so the most recently filed value wins regardless of processing order.
+        ON CONFLICT (concept, cik, period_start, period_end) DO UPDATE SET
+            value = excluded.value,
+            unit = excluded.unit,
+            filing_date = excluded.filing_date,
+            form_type = excluded.form_type,
+            accession_number = excluded.accession_number,
+            source_url = excluded.source_url
+        WHERE excluded.filing_date > financial_facts.filing_date
     """
     conn.executemany(sql, facts)
     conn.commit()

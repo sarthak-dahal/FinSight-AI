@@ -9,7 +9,8 @@
     "requires_sql": true,
     "requires_retrieval": false,
     "verified": true,
-    "source": "financial_facts — us-gaap:Revenues, period 2025-01-27 to 2026-01-25"
+    "source": "financial_facts — us-gaap:Revenues, period 2025-01-27 to 2026-01-25",
+    "expected_chunks": []
   },
   {
     "id": "sq_002",
@@ -21,7 +22,8 @@
     "requires_sql": true,
     "requires_retrieval": false,
     "verified": true,
-    "source": "financial_facts — us-gaap:OperatingIncomeLoss / us-gaap:Revenues"
+    "source": "financial_facts — us-gaap:OperatingIncomeLoss / us-gaap:Revenues",
+    "expected_chunks": []
   },
   {
     "id": "sq_003",
@@ -33,7 +35,8 @@
     "requires_sql": true,
     "requires_retrieval": false,
     "verified": true,
-    "source": "financial_facts — us-gaap:ResearchAndDevelopmentExpense / us-gaap:Revenues"
+    "source": "financial_facts — us-gaap:ResearchAndDevelopmentExpense / us-gaap:Revenues",
+    "expected_chunks": []
   },
   {
     "id": "sq_004",
@@ -45,7 +48,8 @@
     "requires_sql": true,
     "requires_retrieval": false,
     "verified": true,
-    "source": "financial_facts — us-gaap:Revenues across period_end 2024-01-28 and 2026-01-25"
+    "source": "financial_facts — us-gaap:Revenues across period_end 2024-01-28 and 2026-01-25",
+    "expected_chunks": []
   },
   {
     "id": "sq_005",
@@ -57,43 +61,55 @@
     "requires_sql": true,
     "requires_retrieval": false,
     "verified": true,
-    "source": "financial_facts — OperatingIncomeLoss / Revenues for both periods"
+    "source": "financial_facts — OperatingIncomeLoss / Revenues for both periods",
+    "expected_chunks": []
   },
   {
     "id": "sq_006",
     "question": "What are the main business segments or product lines that Nvidia describes in its fiscal year 2026 annual report?",
-    "expected_answer": "Nvidia describes two reportable segments: Compute & Networking (including data center AI chips, networking, automotive) and Graphics (including gaming GPUs, professional visualization). The company emphasizes its accelerated computing platform and AI-related products as the primary growth drivers.",
+    "expected_answer": "Nvidia reports two segments. Compute & Networking includes Data Center accelerated computing and networking platforms, AI solutions and software, and Automotive platforms. Graphics includes GeForce GPUs for gaming and PCs and Quadro/NVIDIA RTX GPUs for enterprise workstation graphics.",
     "answer_type": "factual",
     "company": "NVDA",
     "fiscal_year": "2026",
     "requires_sql": false,
     "requires_retrieval": true,
-    "verified": false,
-    "source": "filing_chunks — section_id=1 (Business), verify against actual text"
+    "verified": true,
+    "source": "filing_chunks — Item 1 'Our Businesses' and Item 7 overview",
+    "expected_chunks": [
+      "0001045810-26-000021|1|3",
+      "0001045810-26-000021|7|0"
+    ]
   },
   {
     "id": "sq_007",
     "question": "According to Nvidia's fiscal year 2026 annual report, what factors does management identify as driving revenue growth?",
-    "expected_answer": "Management cites strong demand for AI infrastructure including data center GPUs (particularly Blackwell architecture), growth in cloud service provider spending on AI training and inference, and expansion into automotive and enterprise AI markets.",
+    "expected_answer": "Revenue growth in fiscal year 2026 was driven by data center compute and networking platforms for accelerated computing and AI solutions. Blackwell architectures represented the majority of Data Center revenue. Management notes that the availability of data centers, energy, and capital for customers' AI infrastructure buildout is crucial.",
     "answer_type": "narrative",
     "company": "NVDA",
     "fiscal_year": "2026",
     "requires_sql": false,
     "requires_retrieval": true,
-    "verified": false,
-    "source": "filing_chunks — section_id=7 (MD&A), verify against actual text"
+    "verified": true,
+    "source": "filing_chunks — Item 7 'Recent Developments, Future Objectives and Challenges'",
+    "expected_chunks": [
+      "0001045810-26-000021|7|0"
+    ]
   },
   {
     "id": "sq_008",
     "question": "What risk factors does Nvidia identify in its fiscal year 2026 annual report related to its dependence on a small number of customers?",
-    "expected_answer": "Nvidia discloses concentration risk from a small number of large customers (primarily hyperscale cloud providers) representing a significant portion of revenue. It warns that losing or seeing reduced orders from any of these customers could materially impact results.",
+    "expected_answer": "Nvidia states that a significant amount of its revenue comes from a limited number of partners, distributors, and customers. In fiscal year 2026, one direct customer represented 22% of total revenue and another represented 14%. Some indirect customers are estimated to individually represent 10% or more of revenue. Losing a large customer, reduced purchases, or being unable to sell to a customer due to trade restrictions could adversely affect revenue.",
     "answer_type": "narrative",
     "company": "NVDA",
     "fiscal_year": "2026",
     "requires_sql": false,
     "requires_retrieval": true,
-    "verified": false,
-    "source": "filing_chunks — section_id=1A (Risk Factors), verify against actual text"
+    "verified": true,
+    "source": "filing_chunks — Item 1A customer concentration risk factor",
+    "expected_chunks": [
+      "0001045810-26-000021|1A|26",
+      "0001045810-26-000021|1A|27"
+    ]
   },
   {
     "id": "sq_009",
@@ -105,7 +121,8 @@
     "requires_sql": true,
     "requires_retrieval": false,
     "verified": true,
-    "source": "financial_facts — NetIncomeLoss / Revenues, period 2024-01-29 to 2025-01-26"
+    "source": "financial_facts — NetIncomeLoss / Revenues, period 2024-01-29 to 2025-01-26",
+    "expected_chunks": []
   },
   {
     "id": "sq_010",
@@ -117,6 +134,297 @@
     "requires_sql": false,
     "requires_retrieval": false,
     "verified": true,
-    "source": "unanswerable — no future period data exists in the dataset"
+    "source": "unanswerable — no future period data exists in the dataset",
+    "expected_chunks": []
+  },
+  {
+    "id": "sq_011",
+    "question": "What was Apple's total revenue in fiscal year 2026, and how much did it grow from fiscal year 2025?",
+    "expected_answer": "Apple's revenue was $478,834 million in fiscal year 2026, up from $416,161 million in fiscal year 2025, an increase of about 15.1%.",
+    "answer_type": "comparative",
+    "company": "AAPL",
+    "fiscal_year": "2025,2026",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — Revenues FY2025, FY2026",
+    "expected_chunks": []
+  },
+  {
+    "id": "sq_012",
+    "question": "What was Apple's gross margin percentage in fiscal year 2026?",
+    "expected_answer": "Apple's gross margin was about 48.8% in fiscal year 2026 (gross profit $233,602 million on revenue $478,834 million), up from about 46.9% in fiscal year 2025.",
+    "answer_type": "numerical",
+    "company": "AAPL",
+    "fiscal_year": "2026",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — GrossProfit / Revenues",
+    "expected_chunks": []
+  },
+  {
+    "id": "sq_013",
+    "question": "How much did Apple spend on R&D in fiscal year 2026, and how fast did it grow?",
+    "expected_answer": "Apple spent $45,765 million on R&D in fiscal year 2026, about 9.6% of revenue (the 10-K rounds this to 10%), up about 32.5% from $34,550 million in fiscal year 2025.",
+    "answer_type": "numerical",
+    "company": "AAPL",
+    "fiscal_year": "2025,2026",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — ResearchAndDevelopmentExpense; Item 7 operating expenses table",
+    "expected_chunks": [
+      "0000320193-26-000026|7|4"
+    ]
+  },
+  {
+    "id": "sq_014",
+    "question": "What was Microsoft's operating margin in fiscal year 2026?",
+    "expected_answer": "Microsoft's operating margin was about 46.8% in fiscal year 2026 (operating income $155,237 million on revenue $331,839 million), up from about 45.6% in fiscal year 2025.",
+    "answer_type": "numerical",
+    "company": "MSFT",
+    "fiscal_year": "2026",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — OperatingIncomeLoss / Revenues",
+    "expected_chunks": []
+  },
+  {
+    "id": "sq_015",
+    "question": "How did Microsoft's capital expenditures change from fiscal year 2024 to fiscal year 2026?",
+    "expected_answer": "Microsoft's capital expenditures rose from $44,477 million in fiscal year 2024 to $115,948 million in fiscal year 2026, an increase of about 160.7% (roughly 2.6x). In fiscal year 2026, capex was about 34.9% of revenue.",
+    "answer_type": "comparative",
+    "company": "MSFT",
+    "fiscal_year": "2024,2026",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — PaymentsToAcquirePropertyPlantAndEquipment",
+    "expected_chunks": []
+  },
+  {
+    "id": "sq_016",
+    "question": "How much did Microsoft's net income grow in fiscal year 2026, and how did its OpenAI investment affect that?",
+    "expected_answer": "Net income grew about 31.3%, from $101,832 million to $133,749 million. Net gains from OpenAI investments added $5.0 billion to fiscal year 2026 net income, while net losses reduced fiscal year 2025 net income by $3.6 billion. Excluding both, growth would be about 22.1%.",
+    "answer_type": "multi_step",
+    "company": "MSFT",
+    "fiscal_year": "2025,2026",
+    "requires_sql": true,
+    "requires_retrieval": true,
+    "verified": true,
+    "source": "financial_facts — NetIncomeLoss; Item 7 OpenAI impact",
+    "expected_chunks": [
+      "0001193125-26-323660|7|4"
+    ]
+  },
+  {
+    "id": "sq_017",
+    "question": "Compare the operating margins of Nvidia, Microsoft, and Apple in their most recent fiscal year.",
+    "expected_answer": "In fiscal year 2026, Nvidia had the highest operating margin at about 60.4%, followed by Microsoft at about 46.8% and Apple at about 33.0%. Fiscal years end at different times: Nvidia in January 2026, Microsoft in June 2026, Apple in September 2026.",
+    "answer_type": "comparative",
+    "company": "NVDA,MSFT,AAPL",
+    "fiscal_year": "2026",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — OperatingIncomeLoss / Revenues for all three",
+    "expected_chunks": []
+  },
+  {
+    "id": "sq_018",
+    "question": "Which company spends the largest share of its revenue on R&D: Nvidia, Microsoft, or Apple (fiscal year 2026)?",
+    "expected_answer": "Microsoft spends the largest share at about 10.7% of revenue ($35,562M), then Apple at about 9.6% ($45,765M), then Nvidia at about 8.6% ($18,497M). Apple spends the most in absolute dollars.",
+    "answer_type": "comparative",
+    "company": "NVDA,MSFT,AAPL",
+    "fiscal_year": "2026",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — ResearchAndDevelopmentExpense / Revenues for all three",
+    "expected_chunks": []
+  },
+  {
+    "id": "sq_019",
+    "question": "How did Nvidia's diluted earnings per share change from fiscal year 2024 to fiscal year 2025?",
+    "expected_answer": "On a split-adjusted basis, Nvidia's diluted EPS rose from $1.19 in fiscal year 2024 to $2.94 in fiscal year 2025, an increase of about 147%, consistent with net income growth of about 145%. The fiscal year 2024 10-K originally reported $11.93 before the June 2024 ten-for-one stock split; comparing the unadjusted figure would wrongly suggest a decline.",
+    "answer_type": "multi_step",
+    "company": "NVDA",
+    "fiscal_year": "2024,2025",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — EarningsPerShareDiluted as restated in the FY2025/FY2026 10-Ks",
+    "expected_chunks": []
+  },
+  {
+    "id": "sq_020",
+    "question": "What drove Microsoft's revenue growth in fiscal year 2026?",
+    "expected_answer": "Revenue increased $50.1 billion or 18%, driven by growth in Microsoft Cloud. Intelligent Cloud grew on Azure; Productivity and Business Processes grew on Microsoft 365 Commercial cloud; More Personal Computing declined due to Xbox, partly offset by Search advertising growth.",
+    "answer_type": "narrative",
+    "company": "MSFT",
+    "fiscal_year": "2026",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": true,
+    "source": "filing_chunks — Item 7 'Fiscal Year 2026 Compared with Fiscal Year 2025'",
+    "expected_chunks": [
+      "0001193125-26-323660|7|3",
+      "0001193125-26-323660|7|4"
+    ]
+  },
+  {
+    "id": "sq_021",
+    "question": "How fast did Microsoft's Azure and other cloud services revenue grow in fiscal year 2026?",
+    "expected_answer": "Azure and other cloud services revenue grew 41% in fiscal year 2026, driven by demand across the platform with growth across all workloads. Intelligent Cloud revenue overall increased $31.5 billion or 30%.",
+    "answer_type": "factual",
+    "company": "MSFT",
+    "fiscal_year": "2026",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": true,
+    "source": "filing_chunks — Item 7 Intelligent Cloud segment results",
+    "expected_chunks": [
+      "0001193125-26-323660|7|6"
+    ]
+  },
+  {
+    "id": "sq_022",
+    "question": "How fast did Microsoft's Azure and other cloud services revenue grow in fiscal year 2024?",
+    "expected_answer": "Azure and other cloud services revenue grew 30% in fiscal year 2024, driven by growth in consumption-based services.",
+    "answer_type": "factual",
+    "company": "MSFT",
+    "fiscal_year": "2024",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": true,
+    "source": "filing_chunks — FY2024 10-K Item 7 (tests fiscal-year filtering against sq_021)",
+    "expected_chunks": [
+      "0000950170-24-087843|7|8"
+    ]
+  },
+  {
+    "id": "sq_023",
+    "question": "What are Microsoft's reportable business segments?",
+    "expected_answer": "Microsoft reports three segments: Productivity and Business Processes, Intelligent Cloud, and More Personal Computing.",
+    "answer_type": "factual",
+    "company": "MSFT",
+    "fiscal_year": "2026",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": true,
+    "source": "filing_chunks — Item 1 'Operating Segments'",
+    "expected_chunks": [
+      "0001193125-26-323660|1|1",
+      "0001193125-26-323660|1|2"
+    ]
+  },
+  {
+    "id": "sq_024",
+    "question": "How did Microsoft's investment in OpenAI affect its fiscal year 2026 earnings?",
+    "expected_answer": "Net gains from investments in OpenAI increased fiscal year 2026 net income by $5.0 billion and diluted EPS by $0.67. In fiscal year 2025, net losses from OpenAI reduced net income by $3.6 billion and diluted EPS by $0.49. Microsoft's non-GAAP measures exclude these gains and losses.",
+    "answer_type": "narrative",
+    "company": "MSFT",
+    "fiscal_year": "2026",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": true,
+    "source": "filing_chunks — Item 7 OpenAI impact",
+    "expected_chunks": [
+      "0001193125-26-323660|7|3",
+      "0001193125-26-323660|7|4"
+    ]
+  },
+  {
+    "id": "sq_025",
+    "question": "How does Microsoft's board oversee cybersecurity risk?",
+    "expected_answer": "The Board of Directors oversees cybersecurity risk, with reviews scheduled at least quarterly. Senior management presents to the Board, including the CISO, the EVP of Microsoft Security, and the EVP of Cloud + AI. An escalation process informs senior management and the Board of significant issues.",
+    "answer_type": "narrative",
+    "company": "MSFT",
+    "fiscal_year": "2026",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": true,
+    "source": "filing_chunks — Item 1C Governance",
+    "expected_chunks": [
+      "0001193125-26-323660|1C|0",
+      "0001193125-26-323660|1C|1"
+    ]
+  },
+  {
+    "id": "sq_026",
+    "question": "How did Apple's iPhone sales perform in fiscal year 2026?",
+    "expected_answer": "iPhone net sales were $254,098 million in fiscal year 2026, up 21% from $209,586 million in fiscal year 2025, due to higher net sales of Pro models. iPhone was about 53% of Apple's total net sales.",
+    "answer_type": "narrative",
+    "company": "AAPL",
+    "fiscal_year": "2026",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": true,
+    "source": "filing_chunks — Item 7 'Products and Services Performance'",
+    "expected_chunks": [
+      "0000320193-26-000026|7|3"
+    ]
+  },
+  {
+    "id": "sq_027",
+    "question": "How did Apple's Greater China sales change in fiscal year 2026?",
+    "expected_answer": "Greater China net sales rose 28% to $82,378 million in fiscal year 2026, from $64,377 million in fiscal year 2025, reversing a 4% decline in fiscal year 2025. It was Apple's fastest-growing geographic segment in fiscal year 2026.",
+    "answer_type": "narrative",
+    "company": "AAPL",
+    "fiscal_year": "2026",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": true,
+    "source": "filing_chunks — Item 7 'Segment Operating Performance'",
+    "expected_chunks": [
+      "0000320193-26-000026|7|2"
+    ]
+  },
+  {
+    "id": "sq_028",
+    "question": "How many employees did Nvidia have at the end of fiscal year 2026?",
+    "expected_answer": "Approximately 42,000 employees in 38 countries, of whom about 31,000 worked in research and development and 11,000 in sales, marketing, operations, and administration.",
+    "answer_type": "factual",
+    "company": "NVDA",
+    "fiscal_year": "2026",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": true,
+    "source": "filing_chunks — Item 1 'Human Capital Management'",
+    "expected_chunks": [
+      "0001045810-26-000021|1|18"
+    ]
+  },
+  {
+    "id": "sq_029",
+    "question": "How many iPhone units did Apple sell in fiscal year 2026?",
+    "expected_answer": "INSUFFICIENT EVIDENCE — Apple does not disclose unit sales in its 10-K. The filing reports iPhone net sales ($254,098 million) but not units. The system should say so rather than estimate.",
+    "answer_type": "unanswerable",
+    "company": "AAPL",
+    "fiscal_year": "2026",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": true,
+    "source": "unanswerable — no unit data in filings; a good answer may cite iPhone net sales instead",
+    "expected_chunks": [
+      "0000320193-26-000026|7|3"
+    ]
+  },
+  {
+    "id": "sq_030",
+    "question": "How did export restrictions affect Nvidia's China data center sales in fiscal year 2024?",
+    "expected_answer": "U.S. export licensing requirements applied to Nvidia's A100, A800, H100, H800, and L40S products. Sales to China fell as a share of Data Center revenue from 19% in fiscal year 2023 to 14% in fiscal year 2024, and Nvidia had not received licenses to ship the restricted products to China.",
+    "answer_type": "narrative",
+    "company": "NVDA",
+    "fiscal_year": "2024",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": true,
+    "source": "filing_chunks — FY2024 10-K Item 7",
+    "expected_chunks": [
+      "0001045810-24-000029|7|2"
+    ]
   }
 ]

@@ -15,13 +15,13 @@ A local financial research assistant that answers questions about public compani
 
 ---
 
-## Current state: Week 2 complete, Phase 0–1 done → next is Phase 2
+## Current state: Week 2 complete, Phases 0–2 done → next is Phase 3 (retrieval)
 
 ### Roadmap (agreed 2026-11-10)
 
 - [x] **Phase 0 — Stabilize:** tests fixed, requirements pinned, email moved to `.env`, clutter removed, venv rebuilt on Python 3.14
 - [x] **Phase 1 — Claude Code setup:** `CLAUDE.md`, `.claude/settings.json`, `/session-wrap` skill
-- [ ] **Phase 2 — Finish Week 1 gap:** grow `seed_questions.json` from 10 → 30 (blueprint target), across all 3 companies; tag narrative questions with expected `section_id` + chunk(s) as retrieval ground truth
+- [x] **Phase 2 — Finish Week 1 gap:** 30 verified questions across all 3 companies, retrieval questions labelled with `expected_chunks`; fixed two fact-table bugs found along the way (see Week 2 → "Fact table fixes")
 - [ ] **Phase 3 — Week 3 retrieval baseline:** install retrieval packages → `bm25_retriever.py` → `vector_retriever.py` (MiniLM, model name in `configs/retrieval.yaml`) → `build_index.py` → recall@5/@10 eval for both → retriever unit tests
 - [ ] **Phase 4 — Stretch (optional):** compare `bge-small`/`bge-base` vs MiniLM; prototype hybrid (RRF); table-aware chunking if numeric retrieval is weak
 - Later (blueprint): Week 4 reranker + Ollama + calculations + citations · Week 5 eval & failure analysis · Week 6 Streamlit, docs, demo
@@ -57,6 +57,19 @@ A local financial research assistant that answers questions about public compani
 **Runner:** `scripts/extract_tables.py`  
 **Database:** `data/finsight.db` (SQLite, ~3 MB)  
 **Result:** 706 text chunks + 140 unique financial facts in the DB (252 extracted; each 10-K restates prior years, so the UNIQUE constraint dedupes them)
+
+#### Fact table fixes (2026-11-10)
+
+- **`fiscal_year` now labels the period, not the filing.** Previously FY2022 facts from the FY2024 10-K were tagged `fiscal_year=2024`, so year joins in `queries.sql` mixed periods. Now `fiscal_year = period_end[:4]` (works for MSFT/AAPL/NVDA; revisit for early-January fiscal year-ends).
+- **Newest filing wins on conflict** (`ON CONFLICT ... WHERE excluded.filing_date > ...`). Later 10-Ks restate prior years; NVDA's June 2024 10:1 split restated FY2024 diluted EPS from $11.93 → $1.19. Only NVDA EPS FY2023/24 changed.
+- Regression tests: `tests/test_data_quality.py`.
+
+#### Known data gaps
+
+- **No balance-sheet facts.** Total Assets, Cash, Long-term Debt, and Equity are instant (point-in-time) contexts, which the extractor skips. Needs instant-context support to answer leverage/liquidity questions.
+- Cost of Revenue only for NVDA; D&A missing for MSFT (different XBRL tags; AAPL/MSFT Cost of Revenue derivable as Revenue − Gross Profit).
+- NVDA FY2022 EPS ($3.85) is pre-split — no later filing in the dataset restates it.
+- Financial statement notes (e.g. the split announcement, segment notes) aren't chunked; only Items 1, 1A, 1C, 7, 7A.
 
 #### Parsing modules in `src/finsight/parsing/`
 
@@ -109,11 +122,11 @@ Pre-written analytical queries are in `sql/queries.sql`.
 
 #### Seed evaluation questions ✅
 
-10 verified questions in `data/evaluation/seed_questions.json`:
-- 5 numerical/factual (all verified against DB, using NVDA data)
-- 3 narrative (require text retrieval, to be verified against chunks)
-- 1 multi-step comparative
-- 1 unanswerable (FY2027 forecast — system must abstain)
+30 verified questions in `data/evaluation/seed_questions.json` (NVDA 13, MSFT 9, AAPL 6, cross-company 2):
+- SQL-answerable numerical/comparative/multi-step questions, all computed from the DB
+- Narrative questions verified against chunk text; each has `expected_chunks` (`accession|section_id|chunk_idx`, stable across rebuilds) — retrieval ground truth for recall@k
+- Built-in traps: same question for MSFT FY2024 vs FY2026 Azure (tests year filtering); NVDA EPS across the stock split; differing fiscal year-ends in cross-company comparisons
+- 2 unanswerable (NVDA FY2027 forecast; Apple iPhone unit sales — not disclosed)
 
 ---
 
@@ -181,7 +194,7 @@ python -m pytest tests/ -v
 
 ## Tests
 
-`tests/test_ingestion_simple.py` — 6 smoke tests, all passing:
+`tests/test_ingestion_simple.py` (6 smoke tests) + `tests/test_data_quality.py` (6 data regression tests) — 12 passing. Smoke tests check:
 - Scripts and parsing modules exist
 - SQL files exist
 - 9 manifests exist
