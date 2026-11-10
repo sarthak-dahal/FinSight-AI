@@ -1,6 +1,22 @@
 # FinSight AI
-
 A local financial research assistant that can analyze public-company filings, answer questions using source evidence, perform financial calculations, and compare companies across reporting periods.
+
+The goal of FinSight AI is to build a local AI-powered financial research assistant that analyzes public companies using their SEC filings.
+
+A user should be able to ask questions like:
+- Why did Microsoft's revenue increase?
+- How does Apple's profitability compare to Microsoft?
+- How has Nvidia's R&D spending changed?
+- What risks does a company identify in its annual report?
+FinSight AI will:
+1. Download and process SEC financial filings.
+2. Extract financial data and business information.
+3. Use SQL, Python, and machine learning to analyze the data.
+4. Use RAG and a local LLM to answer questions.
+5. Provide calculations, supporting evidence, and citations.
+Ultimately: Build an end-to-end Data Science and AI application that can research companies, analyze financial performance, and explain its findings with verifiable evidence.
+
+
 
 ## Project Overview
 

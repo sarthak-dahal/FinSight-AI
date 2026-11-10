@@ -1,36 +1,26 @@
 # FinSight AI - Requirements
+# Python 3.9+. Install with: .venv/bin/python -m pip install -r requirements.txt
 
-# Core Python libraries
-python>=3.8
-numpy
-pandas
-sqlite3
+# Ingestion (Week 1)
+requests==2.32.5
+python-dotenv==1.2.1
 
-# Web scraping and parsing
-beautifulsoup4
-lxml
-
-# Embeddings and vector search
-sentence-transformers
-faiss-cpu
-
-# LLM and local inference
-ollama
-
-# API and web framework
-fastapi
-uvicorn
-streamlit
-
-# Database
-sqlalchemy
+# Parsing (Week 2)
+beautifulsoup4==4.15.0
+lxml==6.1.3
 
 # Testing
-pytest
+pytest==8.4.2
 
-# Data processing
-openpyxl
-pdfplumber
+# --- Not yet installed: uncomment and pin when the week begins ---
 
-# Evaluation
-ragas
+# Retrieval (Week 3)
+# sentence-transformers
+# faiss-cpu
+# rank_bm25
+
+# LLM (Week 4)
+# ollama
+
+# UI (Week 6)
+# streamlit

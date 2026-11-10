@@ -1,0 +1,122 @@
+[
+  {
+    "id": "sq_001",
+    "question": "What was Nvidia's total revenue in fiscal year 2026?",
+    "expected_answer": "Nvidia's total revenue in fiscal year 2026 was $215,938 million (approximately $215.9 billion).",
+    "answer_type": "factual",
+    "company": "NVDA",
+    "fiscal_year": "2026",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — us-gaap:Revenues, period 2025-01-27 to 2026-01-25"
+  },
+  {
+    "id": "sq_002",
+    "question": "What was Nvidia's operating margin in fiscal year 2026?",
+    "expected_answer": "Nvidia's operating margin in fiscal year 2026 was approximately 60.4%, calculated as operating income of $130,387 million divided by revenue of $215,938 million.",
+    "answer_type": "numerical",
+    "company": "NVDA",
+    "fiscal_year": "2026",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — us-gaap:OperatingIncomeLoss / us-gaap:Revenues"
+  },
+  {
+    "id": "sq_003",
+    "question": "How much did Nvidia spend on research and development in fiscal year 2026, and what percentage of revenue does that represent?",
+    "expected_answer": "Nvidia spent $18,497 million on R&D in fiscal year 2026, which represents approximately 8.6% of its $215,938 million in revenue.",
+    "answer_type": "numerical",
+    "company": "NVDA",
+    "fiscal_year": "2026",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — us-gaap:ResearchAndDevelopmentExpense / us-gaap:Revenues"
+  },
+  {
+    "id": "sq_004",
+    "question": "How did Nvidia's revenue change between fiscal year 2024 and fiscal year 2026?",
+    "expected_answer": "Nvidia's revenue grew from $60,922 million in fiscal year 2024 to $215,938 million in fiscal year 2026, an increase of approximately 254.4% over two years.",
+    "answer_type": "comparative",
+    "company": "NVDA",
+    "fiscal_year": "2024,2026",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — us-gaap:Revenues across period_end 2024-01-28 and 2026-01-25"
+  },
+  {
+    "id": "sq_005",
+    "question": "How did Nvidia's operating margin change from fiscal year 2024 to fiscal year 2026?",
+    "expected_answer": "Nvidia's operating margin expanded from approximately 54.1% in fiscal year 2024 (operating income $32,972M on revenue $60,922M) to 60.4% in fiscal year 2026 (operating income $130,387M on revenue $215,938M), a gain of roughly 6 percentage points.",
+    "answer_type": "multi_step",
+    "company": "NVDA",
+    "fiscal_year": "2024,2026",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — OperatingIncomeLoss / Revenues for both periods"
+  },
+  {
+    "id": "sq_006",
+    "question": "What are the main business segments or product lines that Nvidia describes in its fiscal year 2026 annual report?",
+    "expected_answer": "Nvidia describes two reportable segments: Compute & Networking (including data center AI chips, networking, automotive) and Graphics (including gaming GPUs, professional visualization). The company emphasizes its accelerated computing platform and AI-related products as the primary growth drivers.",
+    "answer_type": "factual",
+    "company": "NVDA",
+    "fiscal_year": "2026",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": false,
+    "source": "filing_chunks — section_id=1 (Business), verify against actual text"
+  },
+  {
+    "id": "sq_007",
+    "question": "According to Nvidia's fiscal year 2026 annual report, what factors does management identify as driving revenue growth?",
+    "expected_answer": "Management cites strong demand for AI infrastructure including data center GPUs (particularly Blackwell architecture), growth in cloud service provider spending on AI training and inference, and expansion into automotive and enterprise AI markets.",
+    "answer_type": "narrative",
+    "company": "NVDA",
+    "fiscal_year": "2026",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": false,
+    "source": "filing_chunks — section_id=7 (MD&A), verify against actual text"
+  },
+  {
+    "id": "sq_008",
+    "question": "What risk factors does Nvidia identify in its fiscal year 2026 annual report related to its dependence on a small number of customers?",
+    "expected_answer": "Nvidia discloses concentration risk from a small number of large customers (primarily hyperscale cloud providers) representing a significant portion of revenue. It warns that losing or seeing reduced orders from any of these customers could materially impact results.",
+    "answer_type": "narrative",
+    "company": "NVDA",
+    "fiscal_year": "2026",
+    "requires_sql": false,
+    "requires_retrieval": true,
+    "verified": false,
+    "source": "filing_chunks — section_id=1A (Risk Factors), verify against actual text"
+  },
+  {
+    "id": "sq_009",
+    "question": "What was Nvidia's net income margin in fiscal year 2025?",
+    "expected_answer": "Nvidia's net income margin in fiscal year 2025 was approximately 55.8%, calculated as net income of $72,880 million divided by revenue of $130,497 million.",
+    "answer_type": "numerical",
+    "company": "NVDA",
+    "fiscal_year": "2025",
+    "requires_sql": true,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "financial_facts — NetIncomeLoss / Revenues, period 2024-01-29 to 2025-01-26"
+  },
+  {
+    "id": "sq_010",
+    "question": "What will Nvidia's revenue be in fiscal year 2027?",
+    "expected_answer": "INSUFFICIENT EVIDENCE — The available filings do not contain forward-looking revenue projections for fiscal year 2027. The system should not speculate on future financial results.",
+    "answer_type": "unanswerable",
+    "company": "NVDA",
+    "fiscal_year": "2027",
+    "requires_sql": false,
+    "requires_retrieval": false,
+    "verified": true,
+    "source": "unanswerable — no future period data exists in the dataset"
+  }
+]
