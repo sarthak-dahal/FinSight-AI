@@ -10,12 +10,21 @@ A local financial research assistant that answers questions about public compani
 
 **Stack:** Python, SQLite, BeautifulSoup, Sentence Transformers, FAISS, BM25, Ollama (local LLM), Streamlit  
 **Blueprint:** `finsight_ai_blueprint.md` — full 6-week roadmap  
-**Venv:** `.venv/` in project root → activate with `source .venv/bin/activate`  
+**Venv:** `.venv/` in project root → Python 3.14; use `.venv/bin/python`  
 **Hardware:** MacBook M5 Pro, 48 GB unified memory — can run 27B+ Ollama models comfortably
 
 ---
 
-## Current state: Week 2 complete, ready for Week 3
+## Current state: Week 2 complete, Phase 0–1 done → next is Phase 2
+
+### Roadmap (agreed 2026-11-10)
+
+- [x] **Phase 0 — Stabilize:** tests fixed, requirements pinned, email moved to `.env`, clutter removed, venv rebuilt on Python 3.14
+- [x] **Phase 1 — Claude Code setup:** `CLAUDE.md`, `.claude/settings.json`, `/session-wrap` skill
+- [ ] **Phase 2 — Finish Week 1 gap:** grow `seed_questions.json` from 10 → 30 (blueprint target), across all 3 companies; tag narrative questions with expected `section_id` + chunk(s) as retrieval ground truth
+- [ ] **Phase 3 — Week 3 retrieval baseline:** install retrieval packages → `bm25_retriever.py` → `vector_retriever.py` (MiniLM, model name in `configs/retrieval.yaml`) → `build_index.py` → recall@5/@10 eval for both → retriever unit tests
+- [ ] **Phase 4 — Stretch (optional):** compare `bge-small`/`bge-base` vs MiniLM; prototype hybrid (RRF); table-aware chunking if numeric retrieval is weak
+- Later (blueprint): Week 4 reranker + Ollama + calculations + citations · Week 5 eval & failure analysis · Week 6 Streamlit, docs, demo
 
 ### Week 1 — Data Acquisition ✅
 

@@ -72,3 +72,6 @@ venv/
 htmlcov/
 # Local rendered view of PROGRESS.md
 progress.html
+
+# Claude Code personal overrides
+.claude/settings.local.json

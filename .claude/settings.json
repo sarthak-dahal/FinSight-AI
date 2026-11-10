@@ -1,0 +1,23 @@
+{
+  "env": {
+    "PYTHONPATH": "src"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(.venv/bin/python *)",
+      "Bash(.venv/bin/python -m pytest *)",
+      "Bash(sqlite3 data/finsight.db *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git branch *)"
+    ],
+    "deny": [
+      "Edit(data/raw/**)",
+      "Bash(rm -rf data/raw*)",
+      "Bash(rm -r data/raw*)",
+      "Read(.env)"
+    ]
+  }
+}
