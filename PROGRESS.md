@@ -15,7 +15,7 @@ A local financial research assistant that answers questions about public compani
 
 ---
 
-## Current state: Weeks 1–4 done + web app with demo mode → next: Week 5 (harder eval, model comparison) or hosting the demo
+## Current state (2026-11-10): Weeks 1–4 done + web app with demo mode, all on `main` and pushed → next: host the demo, then Week 5
 
 ### Roadmap (agreed 2026-11-10)
 
@@ -25,9 +25,11 @@ A local financial research assistant that answers questions about public compani
 - [x] **Phase 3 — Week 3 retrieval baseline:** install retrieval packages → `bm25_retriever.py` → `vector_retriever.py` (MiniLM, model name in `configs/retrieval.yaml`) → `build_index.py` → recall@5/@10 eval for both → retriever unit tests
 - [x] **Phase 4 — Better retrieval:** bge-base replaces MiniLM; hybrid RRF retriever; evidence-based labels
 - [x] **Week 4 — Assistant:** parser, financial tools, cited answers with Gemma 3, end-to-end eval (28–29/30)
-- [x] **Week 6 (UI part, done early):** Streamlit app
-- [ ] **Week 5 — Honest evaluation:** ~25 harder questions, model comparison, reranker, failure analysis
-- [ ] **Week 6 (rest):** README/architecture docs, demo, merge to main
+- [x] **Week 6 (UI part, done early):** Streamlit app with live + demo mode
+- [x] **Merged to `main` and pushed to GitHub** (2026-11-10)
+- [ ] **Next A — Host the demo** publicly (free tier, demo mode only)
+- [ ] **Next B — Week 5, honest evaluation:** harder questions, model comparison, reranker, balance sheet, failure analysis
+- [ ] **Next C — Week 6 wrap-up:** README/architecture docs, screenshots or demo video, resume bullets refreshed
 
 ### Week 1 — Data Acquisition ✅
 
@@ -236,13 +238,34 @@ Final run: key figures 24/24 (after grader fix), abstention 29/30, valid citatio
 
 ---
 
-## What's next: Week 5 — honest evaluation
+## What's next
 
-1. ~25 harder questions: paraphrased (not copied from filing text), FY2024–25, risk factors, cross-company, tricky unanswerables
-2. Model comparison on the same set: `uv run scripts/run_evaluation.py --model gemma4:26b` (also gemma3:12b, gpt-oss:20b) — speed vs quality; does anyone fix sq_021?
-3. Reranker experiment (cross-encoder over hybrid top 20) — keep only if it helps
-4. Balance-sheet facts (instant XBRL contexts): assets, cash, debt, equity
-5. Failure analysis write-up in `reports/`; then Week 6 docs + demo, merge to main
+### A. Host the demo publicly (small, do first)
+Goal: a link recruiters can open with no setup.
+1. Lightweight dependencies for the demo deployment — the host must not install torch/faiss/sentence-transformers (~2 GB). Options: a `requirements.txt` next to the app listing only streamlit/pyyaml/ollama, plus making `finsight` importable without installing the full package.
+2. Deploy on Streamlit Community Cloud (or Hugging Face Spaces) with `FINSIGHT_DEMO=1`; confirm the hosted app never imports heavy modules (test already enforces this locally).
+3. Add the public link + a screenshot to the README.
+
+### B. Week 5 — honest evaluation (the main remaining work)
+The current 29/30 comes from 30 questions written after reading the filings, so it is optimistic.
+1. **~25 harder questions:** paraphrased wording (not copied from the filings), FY2024–25, more risk-factor and cross-company questions, tricky unanswerables (e.g. figures the companies don't disclose). Label with evidence phrases (`scripts/label_evidence.py`) and `key_figures`.
+2. **Model comparison** on the same set, same pipeline: `uv run scripts/run_evaluation.py --model <m>` for gemma3:27b (current), gemma3:12b, gemma4:26b, gpt-oss:20b, qwen3.8:27b → table of accuracy vs seconds/answer. Does any model fix sq_021?
+3. **Reranker experiment:** cross-encoder (e.g. `BAAI/bge-reranker-base`) over hybrid top 20 → top 5. Keep only if retrieval or answer scores improve.
+4. **Balance-sheet facts:** support instant XBRL contexts (assets, cash, debt, equity) → leverage/liquidity questions.
+5. **Failure analysis** write-up in `reports/` (what breaks and why, with examples) — strong portfolio material.
+6. Regenerate demo answers with the best model (`uv run scripts/build_demo.py`).
+
+### C. Week 6 wrap-up
+1. README: problem, architecture diagram, results tables, how to run (live and demo), limitations.
+2. `reports/architecture.md` (currently empty): pipeline, design decisions (rule-based parser, Python-computed numbers, RRF, evidence labels), trade-offs.
+3. Screenshots / short demo video for the README.
+4. Refresh resume bullets with Week 5 numbers.
+
+### Known issues / tech debt
+- sq_021: Gemma 3 declines although the passage states the figure (see Week 4 lessons).
+- Notes to the financial statements aren't chunked (e.g. the NVDA stock-split note).
+- NVDA FY2022 EPS is pre-split (no later filing in the dataset restates it).
+- `.agents/` and `.claude/skills/developing-with-streamlit` are local symlinks into `.venv/` (installed with the Streamlit skill) — gitignored, not part of the repo.
 
 ## Dependencies
 

@@ -81,3 +81,7 @@ data/index/
 
 # Answer evaluation run logs (summaries go in reports/evaluation_report.md)
 data/evaluation/runs/
+
+# Local skill symlinks into .venv (installed with the Streamlit skill)
+.agents/
+.claude/skills/developing-with-streamlit
