@@ -75,3 +75,6 @@ progress.html
 
 # Claude Code personal overrides
 .claude/settings.local.json
+
+# Retrieval index (rebuild: scripts/build_index.py)
+data/index/

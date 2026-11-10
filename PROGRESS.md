@@ -15,14 +15,14 @@ A local financial research assistant that answers questions about public compani
 
 ---
 
-## Current state: Week 2 complete, Phases 0–2 done → next is Phase 3 (retrieval)
+## Current state: Week 3 baseline done (Phases 0–3) → next is Phase 4 / Week 4
 
 ### Roadmap (agreed 2026-11-10)
 
 - [x] **Phase 0 — Stabilize:** tests fixed, requirements pinned, email moved to `.env`, clutter removed, venv rebuilt on Python 3.14
 - [x] **Phase 1 — Claude Code setup:** `CLAUDE.md`, `.claude/settings.json`, `/session-wrap` skill
 - [x] **Phase 2 — Finish Week 1 gap:** 30 verified questions across all 3 companies, retrieval questions labelled with `expected_chunks`; fixed two fact-table bugs found along the way (see Week 2 → "Fact table fixes")
-- [ ] **Phase 3 — Week 3 retrieval baseline:** install retrieval packages → `bm25_retriever.py` → `vector_retriever.py` (MiniLM, model name in `configs/retrieval.yaml`) → `build_index.py` → recall@5/@10 eval for both → retriever unit tests
+- [x] **Phase 3 — Week 3 retrieval baseline:** install retrieval packages → `bm25_retriever.py` → `vector_retriever.py` (MiniLM, model name in `configs/retrieval.yaml`) → `build_index.py` → recall@5/@10 eval for both → retriever unit tests
 - [ ] **Phase 4 — Stretch (optional):** compare `bge-small`/`bge-base` vs MiniLM; prototype hybrid (RRF); table-aware chunking if numeric retrieval is weak
 - Later (blueprint): Week 4 reranker + Ollama + calculations + citations · Week 5 eval & failure analysis · Week 6 Streamlit, docs, demo
 
@@ -130,42 +130,43 @@ Pre-written analytical queries are in `sql/queries.sql`.
 
 ---
 
-## What's next: Week 3 — Retrieval System
+### Week 3 — Retrieval baseline ✅ (Phase 3)
 
-### Files to build
+**Modules in `src/finsight/retrieval/`** (settings in `configs/retrieval.yaml`):
+- `common.py` — config, `Chunk` (key `accession|section_id|chunk_idx`), metadata filters (value or list), tokenizer
+- `bm25_retriever.py` — `BM25Retriever().search(q, k, ticker=, fiscal_year=, section_id=)`. Built in memory from SQLite (ms), so no pickle to go stale
+- `vector_retriever.py` — `VectorRetriever()` same API; MiniLM embeddings, FAISS `IndexFlatIP`, refuses to load if index model ≠ config model
+- Every chunk is indexed with a header line ("NVIDIA CORP (NVDA) fiscal year 2026 10-K, Risk Factors.") because filing text rarely names the company
 
-**`src/finsight/retrieval/bm25_retriever.py`**
-- BM25 keyword search over all 706 chunks
-- Accepts optional filters: ticker, fiscal_year, section_id
-- Uses `rank_bm25` package
-- Saves/loads index as a pickle file at `data/index/bm25.pkl`
+**Scripts:** `scripts/build_index.py` (8 s: writes `data/index/` + `filing_chunks.embedding`), `scripts/eval_retrieval.py [--details]`
 
-**`src/finsight/retrieval/vector_retriever.py`**
-- Dense vector search using Sentence Transformers (`all-MiniLM-L6-v2`)
-- FAISS flat index (IndexFlatIP with normalised vectors = cosine similarity)
-- Same company/year/section filters as BM25
-- Saves/loads index from `data/index/faiss.index` + `data/index/chunk_ids.pkl`
+**Baseline** — 16 labelled questions; hit@k = an expected chunk is in the top k:
 
-**`scripts/build_index.py`**
-- Loads all 706 chunks from SQLite
-- Embeds them with Sentence Transformers (CPU, ~1 min on M5 Pro)
-- Builds and saves FAISS index to `data/index/`
-- Saves BM25 corpus pickle
-- Writes embedding blobs back to `filing_chunks.embedding` column in SQLite
+| Retriever | Mode | hit@1 | hit@3 | hit@5 | hit@10 | MRR |
+|---|---|---|---|---|---|---|
+| BM25 | unfiltered | 0.12 | 0.12 | 0.50 | 0.94 | 0.27 |
+| BM25 | filtered (ticker+year) | 0.31 | 0.69 | **0.94** | 0.94 | 0.51 |
+| Vector (MiniLM) | unfiltered | 0.19 | 0.44 | 0.56 | 0.69 | 0.33 |
+| Vector (MiniLM) | filtered | 0.44 | 0.62 | 0.62 | 0.75 | 0.53 |
 
-### Packages still to install (for Week 3)
-
-```bash
-.venv/bin/python -m pip install sentence-transformers faiss-cpu rank_bm25
-```
-
-> Venv: recreated 2026-11-10 on Python 3.14.6 (from `/opt/anaconda3/bin/python3`). Install with `.venv/bin/python -m pip install -r requirements.txt`.
+**What we learned**
+- **Filters matter most.** Unfiltered search often returns the same passage from another year's 10-K. Week 4's query parser must extract ticker + fiscal year.
+- **MiniLM truncation is the vector retriever's main failure.** It reads 256 tokens; chunks are ~470–550 tokens. All 5 NVDA vector misses have the answer past token 256 → Phase 4: a 512-token model (bge-small/base) and/or smaller chunks.
+- hit@1 is harsh: chunks ranked above the expected one are usually overlapping neighbours from the same section.
+- sq_028 (NVDA headcount) fails everywhere: "employees" appears all over the risk factors.
+- Gotchas fixed: tokenizer kept possessives ("microsoft's" ≠ "microsoft"); **`torch` must be imported before `faiss`** on macOS or `encode()` segfaults (exit 139).
 
 ---
 
+## What's next: Phase 4 (optional stretch) → Week 4
+
+1. Fix truncation: try `BAAI/bge-small-en-v1.5` (512 tokens) and/or ~200-word chunks; compare with `eval_retrieval.py`
+2. Hybrid search (reciprocal rank fusion of BM25 + vector)
+3. Week 4: query parser (ticker/year), reranker, Ollama LLM, calculation tools, citations
+
 ## Packages installed in .venv
 
-Pinned in `requirements.txt`: requests, python-dotenv, beautifulsoup4, lxml, pytest.
+Pinned in `requirements.txt` (Python 3.14.6 venv). Install: `.venv/bin/python -m pip install -r requirements.txt`. Tests run from any shell via `pytest.ini` (`pythonpath = src`).
 
 ## Environment
 
@@ -186,18 +187,19 @@ python scripts/ingest_filings.py
 rm -f data/finsight.db
 python scripts/extract_tables.py
 
+# Rebuild retrieval index, then score it
+python scripts/build_index.py
+python scripts/eval_retrieval.py --details
+
 # Run tests
-python -m pytest tests/ -v
+python -m pytest
 ```
 
 ---
 
 ## Tests
 
-`tests/test_ingestion_simple.py` (6 smoke tests) + `tests/test_data_quality.py` (6 data regression tests) — 12 passing. Smoke tests check:
-- Scripts and parsing modules exist
-- SQL files exist
-- 9 manifests exist
-- DB has chunks and facts
-
-Run with: `.venv/bin/python3 -m pytest tests/ -v`
+23 passing (`.venv/bin/python -m pytest`):
+- `test_ingestion_simple.py` — 6 smoke tests (files, manifests, DB populated)
+- `test_data_quality.py` — 6 data tests (one fact per year, restated EPS, known revenues, eval-set labels exist in DB)
+- `test_retrieval.py` — 11 retriever tests (tokenizer, filters, ordering, known answers, index ↔ DB alignment); vector tests skip if the index isn't built

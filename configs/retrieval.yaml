@@ -1,0 +1,15 @@
+# Retrieval settings (Week 3). Paths are relative to the project root.
+db_path: data/finsight.db
+index_dir: data/index
+
+# Dense retriever. Changing the model requires: python scripts/build_index.py
+embedding_model: sentence-transformers/all-MiniLM-L6-v2
+embedding_batch_size: 32
+
+# BM25 parameters (rank_bm25 defaults)
+bm25:
+  k1: 1.5
+  b: 0.75
+
+# Default number of chunks returned
+top_k: 10

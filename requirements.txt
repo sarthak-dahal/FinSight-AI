@@ -12,12 +12,13 @@ lxml==6.1.3
 # Testing
 pytest==8.4.2
 
-# --- Not yet installed: uncomment and pin when the week begins ---
-
 # Retrieval (Week 3)
-# sentence-transformers
-# faiss-cpu
-# rank_bm25
+sentence-transformers==6.2.0
+torch==2.15.0
+faiss-cpu==1.15.1
+rank-bm25==0.2.2
+numpy==2.5.4
+PyYAML==6.0.3
 
 # LLM (Week 4)
 # ollama
