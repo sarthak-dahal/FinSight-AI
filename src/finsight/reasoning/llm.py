@@ -41,14 +41,18 @@ class LLMClient:
         self.model = self.cfg["model"]
         self._client = ollama.Client(host=self.cfg["host"], timeout=self.cfg["timeout"])
 
-    def check(self) -> None:
-        """Raise LLMUnavailable with a fix-it message if the server or model is missing."""
+    def available_models(self) -> list[str]:
+        """Models pulled in Ollama, sorted. Raises LLMUnavailable if Ollama isn't reachable."""
         try:
-            names = {m.model for m in self._client.list().models}
+            return sorted(m.model for m in self._client.list().models if m.model)
         except Exception as e:  # connection refused, timeout, ...
             raise LLMUnavailable(
                 f"Ollama not reachable at {self.cfg['host']} ({e}). Open Ollama.app or run `ollama serve`."
             ) from e
+
+    def check(self) -> None:
+        """Raise LLMUnavailable with a fix-it message if the server or model is missing."""
+        names = self.available_models()
         if self.model not in names:
             raise LLMUnavailable(f"Model {self.model} not pulled. Run: ollama pull {self.model}")
 
@@ -70,15 +74,16 @@ class LLMClient:
         except Exception as e:
             raise LLMUnavailable(f"Ollama request failed: {e}") from e
 
-        prompt_tokens = r.prompt_eval_count or 0
-        if prompt_tokens >= self.cfg["num_ctx"]:
+        prompt_tokens = int(r.prompt_eval_count or 0)
+        num_ctx = int(self.cfg["num_ctx"])
+        if prompt_tokens >= num_ctx:
             raise RuntimeError(
-                f"Prompt filled the whole context ({prompt_tokens} >= num_ctx {self.cfg['num_ctx']}); "
+                f"Prompt filled the whole context ({prompt_tokens} >= num_ctx {num_ctx}); "
                 "Ollama likely truncated it. Raise num_ctx in configs/llm.yaml or send fewer chunks."
             )
         return LLMResponse(
-            text=r.message.content.strip(),
-            model=r.model,
+            text=(r.message.content or "").strip(),
+            model=r.model or self.model,
             prompt_tokens=prompt_tokens,
             completion_tokens=r.eval_count or 0,
             seconds=(r.total_duration or 0) / 1e9,

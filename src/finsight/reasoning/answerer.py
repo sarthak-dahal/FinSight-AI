@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import re
 import time
+from collections.abc import Callable
+from contextlib import AbstractContextManager, nullcontext
 from dataclasses import dataclass, field
 
 from finsight.reasoning.financial_tools import Fact, FinancialData, compute_facts
@@ -119,12 +121,18 @@ class Answerer:
                   f"{' and '.join(v for v in valid if v) or 'none'}; never cite any other tag."]
         return "\n".join(parts)
 
-    def ask(self, question: str) -> Answer:
+    def ask(self, question: str, step: Callable[[str], AbstractContextManager] | None = None) -> Answer:
+        """Answer a question. `step(label)` optionally wraps each stage, e.g. to show progress in a UI."""
+        step = step or (lambda label: nullcontext())
         t0 = time.time()
-        parsed = parse_question(question)
-        facts, notes = compute_facts(parsed, self.data)
-        passages = self.retrieve(parsed)
-        response = self.llm.chat(self.build_prompt(question, facts, passages, notes), system=SYSTEM_PROMPT)
+        with step("Understanding the question"):
+            parsed = parse_question(question)
+        with step("Computing financial figures"):
+            facts, notes = compute_facts(parsed, self.data)
+        with step("Searching the filings"):
+            passages = self.retrieve(parsed)
+        with step(f"Writing the answer with {self.llm.model}"):
+            response = self.llm.chat(self.build_prompt(question, facts, passages, notes), system=SYSTEM_PROMPT)
 
         valid, invalid = [], []
         for kind, num in extract_citations(response.text):

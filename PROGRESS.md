@@ -15,7 +15,7 @@ A local financial research assistant that answers questions about public compani
 
 ---
 
-## Current state: Weeks 1–4 done + web app (Week 6 UI) → next: Week 5 (harder eval, model comparison)
+## Current state: Weeks 1–4 done + web app with demo mode → next: Week 5 (harder eval, model comparison) or hosting the demo
 
 ### Roadmap (agreed 2026-11-10)
 
@@ -225,6 +225,15 @@ Final run: key figures 24/24 (after grader fix), abstention 29/30, valid citatio
 - Gotchas handled: `$` escaped (Streamlit renders `$…$` as LaTeX); SQLite connection shared across Streamlit threads (`check_same_thread=False`)
 - `tests/test_app.py` — headless AppTest with an injected answer (no LLM); verified a live question end to end
 
+### Demo mode + app polish ✅
+
+- **Demo mode** — `data/demo/answers.json` holds 30 complete pipeline outputs (answer, facts, passage text, parse, model info) plus each answer's evaluation verdict. Built by `scripts/build_demo.py` (~9 min; `--rescore` re-grades without the LLM). Loader in `src/finsight/demo.py`.
+  - Turns on automatically when Ollama or the index is unavailable; sidebar toggle; `FINSIGHT_DEMO=1` forces it
+  - Question picker filtered by type; each answer shows a pass/fail badge with the reason (honest: 29/30, sq_021 shown as a failure)
+  - **Never imports torch/faiss/sentence-transformers** (enforced by a fresh-process test) → can be hosted on free tiers
+- **App polish (developing-with-streamlit skill):** suggestion chips routed through the same path as typed input; live progress timeline (`st.status` compact + steps) via `Answerer.ask(step=...)`; input disabled while answering; Material icons; alerts with `title=`; `alt=` on tables; page code as a direct script; `ty` type check clean (fixed 5 None-safety gaps, added `LLMClient.available_models()`)
+- Verified in the running app with the agent API (demo selection + red badge; live question → step timeline, citations); `tests/test_app.py` now 6 tests (3 live, 3 demo)
+
 ---
 
 ## What's next: Week 5 — honest evaluation
@@ -270,10 +279,10 @@ uv run pytest
 
 ## Tests
 
-65 passing (`uv run pytest`):
+68 passing (`uv run pytest`):
 - `test_ingestion_simple.py` — 6 smoke tests (files, manifests, DB populated)
 - `test_data_quality.py` — 7 data tests (one fact per year, restated EPS, known revenues, labels exist in DB and match evidence phrases)
 - `test_retrieval.py` — 17 retriever tests (tokenizer, filters, ordering, known answers, hybrid fusion, index ↔ DB alignment); vector/hybrid tests skip if the index isn't built
 - `test_llm.py` — 3 LLM tests (safe config, actionable errors, live chat); live test skips if Ollama is down
 - `test_reasoning.py` — 30 tests: parser (incl. segment revenue, most recent), financial calculations, citation parsing, answer scoring
-- `test_app.py` — 3 headless Streamlit tests (examples, cited answer with escaped `$`, abstention warning)
+- `test_app.py` — 6 headless Streamlit tests: live (suggestion chips, cited answer with escaped `$`, abstention warning) and demo (picker, type filter, no heavy imports)

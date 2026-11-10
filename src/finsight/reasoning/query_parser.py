@@ -91,6 +91,8 @@ _COMPANY_WORDS = {a for aliases in COMPANY_ALIASES.values() for a in aliases}
 def _is_segment_qualified(text: str, pattern: str) -> bool:
     """True if the word right before the metric names something other than the company/total."""
     m = re.search(pattern, text)
+    if m is None:
+        return False
     before = re.findall(r"[a-z0-9&']+", text[:m.start()])
     if not before:
         return False

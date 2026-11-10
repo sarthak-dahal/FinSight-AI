@@ -14,6 +14,8 @@ Current status and next steps live in PROGRESS.md:
 - Score retrieval: `uv run scripts/eval_retrieval.py --details`
 - LLM: Ollama must be running (Ollama.app or `ollama serve`); model + settings in `configs/llm.yaml`. Never let the LLM do arithmetic — compute in Python and pass results in.
 - Web app: `uv run streamlit run app/streamlit_app.py`; CLI: `uv run scripts/ask.py "question"`; answer eval: `uv run scripts/run_evaluation.py` (~10 min, needs Ollama)
+- Demo answers: `uv run scripts/build_demo.py` (~9 min, needs Ollama) or `--rescore` (no LLM). Demo mode must never import torch/faiss or open the DB (`tests/test_app.py` enforces it).
+- Streamlit work: follow the `developing-with-streamlit` skill; verify changes with the agent API (`--server.enableAgentApi=true` on a separate port) before calling them done.
 - Re-ingest filings (network, slow, needs `SEC_EMAIL` in `.env`): `uv run scripts/ingest_filings.py`
 
 ## Rules

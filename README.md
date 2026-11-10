@@ -57,6 +57,8 @@ uv run streamlit run app/streamlit_app.py          # web app at http://localhost
 uv run scripts/ask.py "What drove Microsoft's revenue growth in fiscal year 2026?"
 ```
 
+**Demo mode (no Ollama needed):** the app shows 30 real pre-generated answers, each with its evaluation result. It switches on automatically when Ollama isn't available, or force it with `FINSIGHT_DEMO=1 uv run streamlit run app/streamlit_app.py`. Regenerate the answers with `uv run scripts/build_demo.py`.
+
 ## Project Structure
 
 ```
