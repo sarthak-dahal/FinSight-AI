@@ -8,15 +8,13 @@ Two modes:
   filtered   — also passes the question's ticker + fiscal_year as metadata filters
                (an upper bound on what a query parser extracting them could give)
 
-Usage: .venv/bin/python scripts/eval_retrieval.py [--retrievers bm25 vector] [--details]
+Usage: uv run scripts/eval_retrieval.py [--retrievers bm25 vector] [--details]
 """
 
 import argparse
 import json
-import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 PROJECT = Path(__file__).resolve().parent.parent
 QUESTIONS = PROJECT / "data" / "evaluation" / "seed_questions.json"

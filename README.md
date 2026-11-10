@@ -36,20 +36,17 @@ The system follows a modular architecture with the following components:
 
 ## Getting Started
 
-1. Create a virtual environment:
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
+Requires [uv](https://docs.astral.sh/uv/).
 
-2. Install dependencies:
 ```bash
-pip install -r requirements.txt
-```
+uv sync                                  # create .venv and install locked dependencies
+cp .env.example .env                     # then set SEC_EMAIL (SEC requires a contact email)
 
-3. Run the application:
-```bash
-streamlit run app/streamlit_app.py
+uv run scripts/ingest_filings.py         # download 10-K filings
+uv run scripts/extract_tables.py         # parse into data/finsight.db
+uv run scripts/build_index.py            # build the vector index
+uv run scripts/eval_retrieval.py         # score retrieval on the labelled questions
+uv run pytest                            # run tests
 ```
 
 ## Project Structure
@@ -57,7 +54,7 @@ streamlit run app/streamlit_app.py
 ```
 .
 ├── README.md
-├── requirements.txt
+├── pyproject.toml / uv.lock
 ├── .gitignore
 ├── configs/                 # Configuration files
 ├── data/                    # Data storage

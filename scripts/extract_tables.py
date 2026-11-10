@@ -12,11 +12,9 @@ Run after ingest_filings.py:
 import json
 import logging
 import sqlite3
-import sys
 from pathlib import Path
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(PROJECT_DIR / "src"))
 
 from finsight.parsing.section_extractor import extract_sections
 from finsight.parsing.xbrl_extractor import extract_xbrl_facts

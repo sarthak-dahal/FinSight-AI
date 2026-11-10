@@ -10,7 +10,7 @@ A local financial research assistant that answers questions about public compani
 
 **Stack:** Python, SQLite, BeautifulSoup, Sentence Transformers, FAISS, BM25, Ollama (local LLM), Streamlit  
 **Blueprint:** `finsight_ai_blueprint.md` — full 6-week roadmap  
-**Venv:** `.venv/` in project root → Python 3.14; use `.venv/bin/python`  
+**Environment:** uv (`pyproject.toml` + `uv.lock`), Python 3.14 in `.venv/`; run things with `uv run ...`  
 **Hardware:** MacBook M5 Pro, 48 GB unified memory — can run 27B+ Ollama models comfortably
 
 ---
@@ -20,7 +20,7 @@ A local financial research assistant that answers questions about public compani
 ### Roadmap (agreed 2026-11-10)
 
 - [x] **Phase 0 — Stabilize:** tests fixed, requirements pinned, email moved to `.env`, clutter removed, venv rebuilt on Python 3.14
-- [x] **Phase 1 — Claude Code setup:** `CLAUDE.md`, `.claude/settings.json`, `/session-wrap` skill
+- [x] **Phase 1 — Claude Code setup:** `CLAUDE.md`, `.claude/settings.json`, `/session-wrap` skill; migrated to uv (`pyproject.toml` + `uv.lock`)
 - [x] **Phase 2 — Finish Week 1 gap:** 30 verified questions across all 3 companies, retrieval questions labelled with `expected_chunks`; fixed two fact-table bugs found along the way (see Week 2 → "Fact table fixes")
 - [x] **Phase 3 — Week 3 retrieval baseline:** install retrieval packages → `bm25_retriever.py` → `vector_retriever.py` (MiniLM, model name in `configs/retrieval.yaml`) → `build_index.py` → recall@5/@10 eval for both → retriever unit tests
 - [ ] **Phase 4 — Stretch (optional):** compare `bge-small`/`bge-base` vs MiniLM; prototype hybrid (RRF); table-aware chunking if numeric retrieval is weak
@@ -164,9 +164,9 @@ Pre-written analytical queries are in `sql/queries.sql`.
 2. Hybrid search (reciprocal rank fusion of BM25 + vector)
 3. Week 4: query parser (ticker/year), reranker, Ollama LLM, calculation tools, citations
 
-## Packages installed in .venv
+## Dependencies
 
-Pinned in `requirements.txt` (Python 3.14.6 venv). Install: `.venv/bin/python -m pip install -r requirements.txt`. Tests run from any shell via `pytest.ini` (`pythonpath = src`).
+Managed by uv (migrated 2026-11-10): dependencies in `pyproject.toml`, exact versions in `uv.lock`. `uv sync` installs; `uv add <pkg>` adds. `finsight` is installed editable, so no PYTHONPATH needed.
 
 ## Environment
 
@@ -178,28 +178,28 @@ Pinned in `requirements.txt` (Python 3.14.6 venv). Install: `.venv/bin/python -m
 
 ```bash
 cd "/Users/sardahal/Desktop/Personal Project/FinSight AI"
-source .venv/bin/activate    # or .venv/bin/python3 directly
+uv sync
 
 # Re-ingest (skips cached files)
-python scripts/ingest_filings.py
+uv run scripts/ingest_filings.py
 
 # Re-extract (drops and recreates DB)
 rm -f data/finsight.db
-python scripts/extract_tables.py
+uv run scripts/extract_tables.py
 
 # Rebuild retrieval index, then score it
-python scripts/build_index.py
-python scripts/eval_retrieval.py --details
+uv run scripts/build_index.py
+uv run scripts/eval_retrieval.py --details
 
 # Run tests
-python -m pytest
+uv run pytest
 ```
 
 ---
 
 ## Tests
 
-23 passing (`.venv/bin/python -m pytest`):
+23 passing (`uv run pytest`):
 - `test_ingestion_simple.py` — 6 smoke tests (files, manifests, DB populated)
 - `test_data_quality.py` — 6 data tests (one fact per year, restated EPS, known revenues, eval-set labels exist in DB)
 - `test_retrieval.py` — 11 retriever tests (tokenizer, filters, ordering, known answers, index ↔ DB alignment); vector tests skip if the index isn't built

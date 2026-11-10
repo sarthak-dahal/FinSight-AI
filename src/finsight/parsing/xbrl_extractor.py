@@ -9,7 +9,7 @@ are skipped so we don't double-count.
 import re
 import warnings
 from pathlib import Path
-from datetime import date, timedelta
+from datetime import date
 from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
 
 warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)

@@ -4,18 +4,15 @@ Embeds every chunk in data/finsight.db with the model in configs/retrieval.yaml,
 writes data/index/faiss.index + chunks.json, and stores each embedding in
 filing_chunks.embedding (float32 bytes).
 
-Usage: .venv/bin/python scripts/build_index.py
+Usage: uv run scripts/build_index.py
 """
 
 import sqlite3
-import sys
 import time
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from finsight.retrieval.common import load_chunks, load_config  # noqa: E402
-from finsight.retrieval.vector_retriever import build_index, load_model  # noqa: E402
+from finsight.retrieval.common import load_chunks, load_config
+from finsight.retrieval.vector_retriever import build_index, load_model
 
 
 def main():

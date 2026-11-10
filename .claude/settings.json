@@ -1,11 +1,11 @@
 {
-  "env": {
-    "PYTHONPATH": "src"
-  },
   "permissions": {
     "allow": [
+      "Bash(uv run *)",
+      "Bash(uv sync *)",
+      "Bash(uv lock *)",
+      "Bash(uv tree *)",
       "Bash(.venv/bin/python *)",
-      "Bash(.venv/bin/python -m pytest *)",
       "Bash(sqlite3 data/finsight.db *)",
       "Bash(git status *)",
       "Bash(git diff *)",
