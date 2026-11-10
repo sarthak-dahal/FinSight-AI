@@ -78,3 +78,6 @@ progress.html
 
 # Retrieval index (rebuild: scripts/build_index.py)
 data/index/
+
+# Answer evaluation run logs (summaries go in reports/evaluation_report.md)
+data/evaluation/runs/

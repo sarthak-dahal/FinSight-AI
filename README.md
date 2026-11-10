@@ -46,7 +46,15 @@ uv run scripts/ingest_filings.py         # download 10-K filings
 uv run scripts/extract_tables.py         # parse into data/finsight.db
 uv run scripts/build_index.py            # build the vector index
 uv run scripts/eval_retrieval.py         # score retrieval on the labelled questions
+uv run scripts/run_evaluation.py        # answer + score all evaluation questions (needs Ollama)
 uv run pytest                            # run tests
+```
+
+Ask questions (needs [Ollama](https://ollama.com) running with `gemma3:27b` pulled):
+
+```bash
+uv run streamlit run app/streamlit_app.py          # web app at http://localhost:8501
+uv run scripts/ask.py "What drove Microsoft's revenue growth in fiscal year 2026?"
 ```
 
 ## Project Structure

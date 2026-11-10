@@ -15,7 +15,7 @@ A local financial research assistant that answers questions about public compani
 
 ---
 
-## Current state: Week 3 + Phase 4 done (hybrid retrieval) → next is Week 4 (the assistant)
+## Current state: Weeks 1–4 done + web app (Week 6 UI) → next: Week 5 (harder eval, model comparison)
 
 ### Roadmap (agreed 2026-11-10)
 
@@ -24,7 +24,10 @@ A local financial research assistant that answers questions about public compani
 - [x] **Phase 2 — Finish Week 1 gap:** 30 verified questions across all 3 companies, retrieval questions labelled with `expected_chunks`; fixed two fact-table bugs found along the way (see Week 2 → "Fact table fixes")
 - [x] **Phase 3 — Week 3 retrieval baseline:** install retrieval packages → `bm25_retriever.py` → `vector_retriever.py` (MiniLM, model name in `configs/retrieval.yaml`) → `build_index.py` → recall@5/@10 eval for both → retriever unit tests
 - [x] **Phase 4 — Better retrieval:** bge-base replaces MiniLM; hybrid RRF retriever; evidence-based labels
-- Later (blueprint): Week 4 reranker + Ollama + calculations + citations · Week 5 eval & failure analysis · Week 6 Streamlit, docs, demo
+- [x] **Week 4 — Assistant:** parser, financial tools, cited answers with Gemma 3, end-to-end eval (28–29/30)
+- [x] **Week 6 (UI part, done early):** Streamlit app
+- [ ] **Week 5 — Honest evaluation:** ~25 harder questions, model comparison, reranker, failure analysis
+- [ ] **Week 6 (rest):** README/architecture docs, demo, merge to main
 
 ### Week 1 — Data Acquisition ✅
 
@@ -189,13 +192,48 @@ Pre-written analytical queries are in `sql/queries.sql`.
 - Speed: ~180 prompt tokens/s → expect ~20–30 s per answer at 27B. Use `gemma3:12b` for fast dev loops.
 - Also installed for later comparison: `gemma4:26b`, `gpt-oss:20b`, `qwen3.8:27b`, `qwen3-coder:30b`.
 
-## What's next: Week 4 — the assistant
+### Week 4 — The assistant ✅
 
-1. **Query parser** — extract ticker(s), fiscal year(s), and question type (numeric vs narrative) from the question; feed as retrieval filters
-2. **Reranker** — cross-encoder (e.g. `BAAI/bge-reranker-base`) over hybrid top 20 → top 5
-3. **Tools** — SQL lookups + Python calculations (margins, growth) over `financial_facts`, so the LLM never does arithmetic
-4. **Answer generation** — prompt Gemma with retrieved chunks + computed facts; cite (accession, section); abstain when evidence is missing
-5. Harder retrieval questions (see takeaways) before tuning anything
+Pipeline (`src/finsight/reasoning/`): **parse → compute facts → retrieve → Gemma writes cited answer → validate citations**
+- `query_parser.py` — rule-based: tickers, fiscal years (incl. "FY26", "most recent"), metrics (plurals, derived margins); segment phrases like "cloud services revenue" are *not* company revenue
+- `financial_tools.py` — every number computed in Python from `financial_facts` with source accession: values, % of revenue, growth, margin changes; prior year added for YoY context; notes for years with no data
+- `answerer.py` — prompt with facts `[F#]` + 5 hybrid-retrieved passages `[C#]`; rules: evidence only, no arithmetic, cite everything, `INSUFFICIENT EVIDENCE:` prefix to abstain, valid tags listed explicitly. Parses grouped citations (`[C1, C3]`) and flags tags pointing at nothing
+- `scripts/ask.py "question"` — CLI
+
+**Answer evaluation** — `scripts/run_evaluation.py` → `reports/evaluation_report.md` (every answer, for human review). Automatic checks in `src/finsight/evaluation/answer_scoring.py`: key figures stated (unit-aware; `key_figures` per question, `accept` for a filing's own rounding), correct abstention, valid citations, answer passage retrieved & cited.
+
+| Run | Passed | Fixed after |
+|---|---|---|
+| 1 | 28/30 | "most recent" pulled prior year → wrong year; prompt read "numbers must be in evidence" as facts-only → abstained despite finding 41% |
+| 2 | 29/30 | missing abstain marker on partial answers; prior year leaked into passage retrieval (FY2025 passage for FY2026 question) |
+| 3 | 29/30 | segment questions got company-total revenue facts; model cited non-existent [C6] → valid tags now listed |
+| 4 (final) | 28/30 → **29/30** after grader fix | sq_013 was correct ("32%" is the filing's own rounding); **sq_021 is a known failure** |
+
+Final run: key figures 24/24 (after grader fix), abstention 29/30, valid citations 100%, answer passage retrieved and cited 16/16. ~18 s/question with gemma3:27b.
+
+**Lessons**
+- Most failures were noisy or ambiguous *inputs* to the model (extra years, irrelevant facts), not model limits. Fix the context before adding prompt rules.
+- Prompt changes shift boundary cases both ways — always re-run the full set, never just the failing question.
+- **Known failure sq_021:** Gemma writes "not directly stated" then quotes "Azure and other cloud services revenue grew 41%" in the next sentence. Three prompt angles tried; stopped to avoid overfitting. Check whether other models get it right (Week 5).
+- 30 questions written by us are too easy to trust these scores — see Week 5.
+
+### Week 6 (early) — Web app ✅
+
+`uv run streamlit run app/streamlit_app.py` → http://localhost:8501
+- Chat interface with example questions; answers with highlighted citations; **Sources cited** (opens the exact passage), **Computed figures** table, **How this was answered** (parse, retrieved passages, model, tokens, time); abstentions shown as warnings
+- Sidebar: model picker (anything in `ollama list`), Ollama status with fix-it messages, passages slider, data coverage
+- Gotchas handled: `$` escaped (Streamlit renders `$…$` as LaTeX); SQLite connection shared across Streamlit threads (`check_same_thread=False`)
+- `tests/test_app.py` — headless AppTest with an injected answer (no LLM); verified a live question end to end
+
+---
+
+## What's next: Week 5 — honest evaluation
+
+1. ~25 harder questions: paraphrased (not copied from filing text), FY2024–25, risk factors, cross-company, tricky unanswerables
+2. Model comparison on the same set: `uv run scripts/run_evaluation.py --model gemma4:26b` (also gemma3:12b, gpt-oss:20b) — speed vs quality; does anyone fix sq_021?
+3. Reranker experiment (cross-encoder over hybrid top 20) — keep only if it helps
+4. Balance-sheet facts (instant XBRL contexts): assets, cash, debt, equity
+5. Failure analysis write-up in `reports/`; then Week 6 docs + demo, merge to main
 
 ## Dependencies
 
@@ -232,8 +270,10 @@ uv run pytest
 
 ## Tests
 
-32 passing (`uv run pytest`):
+65 passing (`uv run pytest`):
 - `test_ingestion_simple.py` — 6 smoke tests (files, manifests, DB populated)
 - `test_data_quality.py` — 7 data tests (one fact per year, restated EPS, known revenues, labels exist in DB and match evidence phrases)
 - `test_retrieval.py` — 17 retriever tests (tokenizer, filters, ordering, known answers, hybrid fusion, index ↔ DB alignment); vector/hybrid tests skip if the index isn't built
 - `test_llm.py` — 3 LLM tests (safe config, actionable errors, live chat); live test skips if Ollama is down
+- `test_reasoning.py` — 30 tests: parser (incl. segment revenue, most recent), financial calculations, citation parsing, answer scoring
+- `test_app.py` — 3 headless Streamlit tests (examples, cited answer with escaped `$`, abstention warning)

@@ -11,7 +11,14 @@
     "verified": true,
     "source": "financial_facts — us-gaap:Revenues, period 2025-01-27 to 2026-01-25",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 215938,
+        "kind": "usd_millions"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_002",
@@ -25,7 +32,14 @@
     "verified": true,
     "source": "financial_facts — us-gaap:OperatingIncomeLoss / us-gaap:Revenues",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 60.4,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_003",
@@ -39,7 +53,18 @@
     "verified": true,
     "source": "financial_facts — us-gaap:ResearchAndDevelopmentExpense / us-gaap:Revenues",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 18497,
+        "kind": "usd_millions"
+      },
+      {
+        "value": 8.6,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_004",
@@ -53,12 +78,27 @@
     "verified": true,
     "source": "financial_facts — us-gaap:Revenues across period_end 2024-01-28 and 2026-01-25",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 60922,
+        "kind": "usd_millions"
+      },
+      {
+        "value": 215938,
+        "kind": "usd_millions"
+      },
+      {
+        "value": 254.4,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_005",
     "question": "How did Nvidia's operating margin change from fiscal year 2024 to fiscal year 2026?",
-    "expected_answer": "Nvidia's operating margin expanded from approximately 54.1% in fiscal year 2024 (operating income $32,972M on revenue $60,922M) to 60.4% in fiscal year 2026 (operating income $130,387M on revenue $215,938M), a gain of roughly 6 percentage points.",
+    "expected_answer": "Nvidia's operating margin expanded from approximately 54.1% in fiscal year 2024 (operating income $32,972M on revenue $60,922M) to 60.4% in fiscal year 2026 (operating income $130,387M on revenue $215,938M), a gain of 6.3 percentage points.",
     "answer_type": "multi_step",
     "company": "NVDA",
     "fiscal_year": "2024,2026",
@@ -67,7 +107,22 @@
     "verified": true,
     "source": "financial_facts — OperatingIncomeLoss / Revenues for both periods",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 54.1,
+        "kind": "percent"
+      },
+      {
+        "value": 60.4,
+        "kind": "percent"
+      },
+      {
+        "value": 6.3,
+        "kind": "number"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_006",
@@ -93,7 +148,9 @@
     "expected_chunks": [
       "0001045810-26-000021|1|3",
       "0001045810-26-000021|7|0"
-    ]
+    ],
+    "key_figures": [],
+    "unanswerable": false
   },
   {
     "id": "sq_007",
@@ -114,7 +171,9 @@
     ],
     "expected_chunks": [
       "0001045810-26-000021|7|0"
-    ]
+    ],
+    "key_figures": [],
+    "unanswerable": false
   },
   {
     "id": "sq_008",
@@ -141,7 +200,18 @@
       "0001045810-26-000021|1A|26",
       "0001045810-26-000021|1A|27",
       "0001045810-26-000021|7|9"
-    ]
+    ],
+    "key_figures": [
+      {
+        "value": 22,
+        "kind": "percent"
+      },
+      {
+        "value": 14,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_009",
@@ -155,7 +225,14 @@
     "verified": true,
     "source": "financial_facts — NetIncomeLoss / Revenues, period 2024-01-29 to 2025-01-26",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 55.8,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_010",
@@ -169,7 +246,9 @@
     "verified": true,
     "source": "unanswerable — no future period data exists in the dataset",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [],
+    "unanswerable": true
   },
   {
     "id": "sq_011",
@@ -183,7 +262,22 @@
     "verified": true,
     "source": "financial_facts — Revenues FY2025, FY2026",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 478834,
+        "kind": "usd_millions"
+      },
+      {
+        "value": 416161,
+        "kind": "usd_millions"
+      },
+      {
+        "value": 15.1,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_012",
@@ -197,7 +291,14 @@
     "verified": true,
     "source": "financial_facts — GrossProfit / Revenues",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 48.8,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_013",
@@ -218,7 +319,21 @@
     ],
     "expected_chunks": [
       "0000320193-26-000026|7|4"
-    ]
+    ],
+    "key_figures": [
+      {
+        "value": 45765,
+        "kind": "usd_millions"
+      },
+      {
+        "value": 32.5,
+        "kind": "percent",
+        "accept": [
+          32
+        ]
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_014",
@@ -232,7 +347,14 @@
     "verified": true,
     "source": "financial_facts — OperatingIncomeLoss / Revenues",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 46.8,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_015",
@@ -246,12 +368,27 @@
     "verified": true,
     "source": "financial_facts — PaymentsToAcquirePropertyPlantAndEquipment",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 44477,
+        "kind": "usd_millions"
+      },
+      {
+        "value": 115948,
+        "kind": "usd_millions"
+      },
+      {
+        "value": 160.7,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_016",
     "question": "How much did Microsoft's net income grow in fiscal year 2026, and how did its OpenAI investment affect that?",
-    "expected_answer": "Net income grew about 31.3%, from $101,832 million to $133,749 million. Net gains from OpenAI investments added $5.0 billion to fiscal year 2026 net income, while net losses reduced fiscal year 2025 net income by $3.6 billion. Excluding both, growth would be about 22.1%.",
+    "expected_answer": "Net income grew about 31.3%, from $101,832 million in fiscal year 2025 to $133,749 million in fiscal year 2026. Net gains from OpenAI investments added $5.0 billion to fiscal year 2026 net income (and $0.67 to diluted EPS), while net losses from OpenAI reduced fiscal year 2025 net income by $3.6 billion.",
     "answer_type": "multi_step",
     "company": "MSFT",
     "fiscal_year": "2025,2026",
@@ -267,7 +404,18 @@
     ],
     "expected_chunks": [
       "0001193125-26-323660|7|4"
-    ]
+    ],
+    "key_figures": [
+      {
+        "value": 31.3,
+        "kind": "percent"
+      },
+      {
+        "value": 5000,
+        "kind": "usd_millions"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_017",
@@ -281,7 +429,22 @@
     "verified": true,
     "source": "financial_facts — OperatingIncomeLoss / Revenues for all three",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 60.4,
+        "kind": "percent"
+      },
+      {
+        "value": 46.8,
+        "kind": "percent"
+      },
+      {
+        "value": 33.0,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_018",
@@ -295,7 +458,22 @@
     "verified": true,
     "source": "financial_facts — ResearchAndDevelopmentExpense / Revenues for all three",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 10.7,
+        "kind": "percent"
+      },
+      {
+        "value": 9.6,
+        "kind": "percent"
+      },
+      {
+        "value": 8.6,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_019",
@@ -309,7 +487,18 @@
     "verified": true,
     "source": "financial_facts — EarningsPerShareDiluted as restated in the FY2025/FY2026 10-Ks",
     "evidence": [],
-    "expected_chunks": []
+    "expected_chunks": [],
+    "key_figures": [
+      {
+        "value": 1.19,
+        "kind": "number"
+      },
+      {
+        "value": 2.94,
+        "kind": "number"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_020",
@@ -331,7 +520,18 @@
     "expected_chunks": [
       "0001193125-26-323660|7|3",
       "0001193125-26-323660|7|4"
-    ]
+    ],
+    "key_figures": [
+      {
+        "value": 50100,
+        "kind": "usd_millions"
+      },
+      {
+        "value": 18,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_021",
@@ -352,7 +552,14 @@
     ],
     "expected_chunks": [
       "0001193125-26-323660|7|6"
-    ]
+    ],
+    "key_figures": [
+      {
+        "value": 41,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_022",
@@ -373,7 +580,14 @@
     ],
     "expected_chunks": [
       "0000950170-24-087843|7|8"
-    ]
+    ],
+    "key_figures": [
+      {
+        "value": 30,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_023",
@@ -395,7 +609,9 @@
     "expected_chunks": [
       "0001193125-26-323660|1|1",
       "0001193125-26-323660|1|2"
-    ]
+    ],
+    "key_figures": [],
+    "unanswerable": false
   },
   {
     "id": "sq_024",
@@ -421,7 +637,18 @@
     "expected_chunks": [
       "0001193125-26-323660|7|3",
       "0001193125-26-323660|7|4"
-    ]
+    ],
+    "key_figures": [
+      {
+        "value": 5000,
+        "kind": "usd_millions"
+      },
+      {
+        "value": 0.67,
+        "kind": "number"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_025",
@@ -447,12 +674,14 @@
     "expected_chunks": [
       "0001193125-26-323660|1C|0",
       "0001193125-26-323660|1C|1"
-    ]
+    ],
+    "key_figures": [],
+    "unanswerable": false
   },
   {
     "id": "sq_026",
     "question": "How did Apple's iPhone sales perform in fiscal year 2026?",
-    "expected_answer": "iPhone net sales were $254,098 million in fiscal year 2026, up 21% from $209,586 million in fiscal year 2025, due to higher net sales of Pro models. iPhone was about 53% of Apple's total net sales.",
+    "expected_answer": "iPhone net sales were $254,098 million in fiscal year 2026, up 21% from $209,586 million in fiscal year 2025, due to higher net sales of Pro models.",
     "answer_type": "narrative",
     "company": "AAPL",
     "fiscal_year": "2026",
@@ -468,7 +697,18 @@
     ],
     "expected_chunks": [
       "0000320193-26-000026|7|3"
-    ]
+    ],
+    "key_figures": [
+      {
+        "value": 254098,
+        "kind": "usd_millions"
+      },
+      {
+        "value": 21,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_027",
@@ -489,7 +729,18 @@
     ],
     "expected_chunks": [
       "0000320193-26-000026|7|2"
-    ]
+    ],
+    "key_figures": [
+      {
+        "value": 82378,
+        "kind": "usd_millions"
+      },
+      {
+        "value": 28,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_028",
@@ -511,7 +762,14 @@
     "expected_chunks": [
       "0001045810-26-000021|1|18",
       "0001045810-26-000021|1|19"
-    ]
+    ],
+    "key_figures": [
+      {
+        "value": 42000,
+        "kind": "number"
+      }
+    ],
+    "unanswerable": false
   },
   {
     "id": "sq_029",
@@ -533,7 +791,9 @@
     "expected_chunks": [
       "0000320193-26-000026|7|2",
       "0000320193-26-000026|7|3"
-    ]
+    ],
+    "key_figures": [],
+    "unanswerable": true
   },
   {
     "id": "sq_030",
@@ -556,6 +816,17 @@
       "0001045810-24-000029|1A|16",
       "0001045810-24-000029|7|2",
       "0001045810-24-000029|7|3"
-    ]
+    ],
+    "key_figures": [
+      {
+        "value": 19,
+        "kind": "percent"
+      },
+      {
+        "value": 14,
+        "kind": "percent"
+      }
+    ],
+    "unanswerable": false
   }
 ]
