@@ -47,7 +47,7 @@ A local financial research assistant that answers questions about public compani
 
 **Runner:** `scripts/extract_tables.py`  
 **Database:** `data/finsight.db` (SQLite, ~3 MB)  
-**Result:** 706 text chunks + 252 financial facts (across all periods in all filings)
+**Result:** 706 text chunks + 140 unique financial facts in the DB (252 extracted; each 10-K restates prior years, so the UNIQUE constraint dedupes them)
 
 #### Parsing modules in `src/finsight/parsing/`
 
@@ -137,7 +137,7 @@ Pre-written analytical queries are in `sql/queries.sql`.
 .venv/bin/python -m pip install sentence-transformers faiss-cpu rank_bm25
 ```
 
-> Note: `.venv/bin/pip` is broken because the venv was created before the project moved into `Personal Project/`. Use `.venv/bin/python -m pip` instead.
+> Venv: recreated 2026-11-10 on Python 3.14.6 (from `/opt/anaconda3/bin/python3`). Install with `.venv/bin/python -m pip install -r requirements.txt`.
 
 ---
 

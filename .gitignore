@@ -70,3 +70,5 @@ venv/
 
 # Test artifacts
 htmlcov/
+# Local rendered view of PROGRESS.md
+progress.html

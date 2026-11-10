@@ -1,5 +1,5 @@
 # FinSight AI - Requirements
-# Python 3.9+. Install with: .venv/bin/python -m pip install -r requirements.txt
+# Python 3.14 (venv built from /opt/anaconda3/bin/python3). Install with: .venv/bin/python -m pip install -r requirements.txt
 
 # Ingestion (Week 1)
 requests==2.32.5
