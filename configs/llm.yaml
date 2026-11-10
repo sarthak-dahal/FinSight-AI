@@ -1,0 +1,21 @@
+# Local LLM settings (Week 4). Requires Ollama running: open Ollama.app or `ollama serve`.
+host: http://localhost:11434
+
+# Any model from `ollama list`. Installed alternatives to compare later on the eval set:
+# gemma3:12b (faster), gemma4:26b, gpt-oss:20b, qwen3.8:27b
+model: gemma3:27b
+
+# Ollama's default context window is only a few thousand tokens and silently truncates
+# longer prompts. Ours holds instructions + facts + ~5 chunks of ~500 tokens.
+# gemma3 supports up to 131072; larger windows use more memory.
+num_ctx: 16384
+
+# Low temperature for factual, repeatable answers (model default is 1.0).
+temperature: 0.1
+seed: 42
+
+# Seconds to wait for one response (27B on CPU/GPU can take a while for long answers).
+timeout: 300
+
+# Keep the model loaded between calls so eval runs don't reload 17 GB each question.
+keep_alive: 15m

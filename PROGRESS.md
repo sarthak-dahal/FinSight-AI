@@ -181,12 +181,20 @@ Pre-written analytical queries are in `sql/queries.sql`.
 
 ---
 
+### Week 4 — LLM setup ✅ (started 2026-11-10)
+
+- **Model: `gemma3:27b` via Ollama** (Q4_K_M, 17.4 GB; Ollama 0.32.13). Settings in `configs/llm.yaml`; client in `src/finsight/reasoning/llm.py` (`LLMClient().chat(user, system)`).
+- `num_ctx: 16384` — Ollama's default context silently truncates; verified a 9.8k-token prompt is read in full. `temperature: 0.1` (model default 1.0).
+- Gemma 3 has **no tool-calling** capability → Python orchestrates (parse → SQL/calc → retrieve) and Gemma only writes the cited answer.
+- Speed: ~180 prompt tokens/s → expect ~20–30 s per answer at 27B. Use `gemma3:12b` for fast dev loops.
+- Also installed for later comparison: `gemma4:26b`, `gpt-oss:20b`, `qwen3.8:27b`, `qwen3-coder:30b`.
+
 ## What's next: Week 4 — the assistant
 
 1. **Query parser** — extract ticker(s), fiscal year(s), and question type (numeric vs narrative) from the question; feed as retrieval filters
 2. **Reranker** — cross-encoder (e.g. `BAAI/bge-reranker-base`) over hybrid top 20 → top 5
 3. **Tools** — SQL lookups + Python calculations (margins, growth) over `financial_facts`, so the LLM never does arithmetic
-4. **LLM via Ollama** — answer from retrieved chunks + tool results, with citations (accession, section); abstain when evidence is missing
+4. **Answer generation** — prompt Gemma with retrieved chunks + computed facts; cite (accession, section); abstain when evidence is missing
 5. Harder retrieval questions (see takeaways) before tuning anything
 
 ## Dependencies
@@ -224,7 +232,8 @@ uv run pytest
 
 ## Tests
 
-29 passing (`uv run pytest`):
+32 passing (`uv run pytest`):
 - `test_ingestion_simple.py` — 6 smoke tests (files, manifests, DB populated)
 - `test_data_quality.py` — 7 data tests (one fact per year, restated EPS, known revenues, labels exist in DB and match evidence phrases)
 - `test_retrieval.py` — 17 retriever tests (tokenizer, filters, ordering, known answers, hybrid fusion, index ↔ DB alignment); vector/hybrid tests skip if the index isn't built
+- `test_llm.py` — 3 LLM tests (safe config, actionable errors, live chat); live test skips if Ollama is down

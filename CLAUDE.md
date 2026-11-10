@@ -12,6 +12,7 @@ Current status and next steps live in PROGRESS.md:
 - Rebuild DB from raw filings: `rm -f data/finsight.db && uv run scripts/extract_tables.py`
 - Rebuild retrieval index (after DB rebuild or model change): `uv run scripts/build_index.py`
 - Score retrieval: `uv run scripts/eval_retrieval.py --details`
+- LLM: Ollama must be running (Ollama.app or `ollama serve`); model + settings in `configs/llm.yaml`. Never let the LLM do arithmetic — compute in Python and pass results in.
 - Re-ingest filings (network, slow, needs `SEC_EMAIL` in `.env`): `uv run scripts/ingest_filings.py`
 
 ## Rules
