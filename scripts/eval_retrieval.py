@@ -48,22 +48,40 @@ def evaluate(retriever, questions, filtered):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--retrievers", nargs="+", default=["bm25", "vector"], choices=["bm25", "vector"])
+    ap.add_argument("--retrievers", nargs="+", default=["bm25", "vector", "hybrid"],
+                    choices=["bm25", "vector", "hybrid"])
+    ap.add_argument("--rrf-weights", nargs=2, type=float, metavar=("BM25", "VECTOR"), action="append",
+                    help="extra hybrid variants with these weights (repeatable)")
+    ap.add_argument("--models", nargs="+", default=None,
+                    help="embedding models for the vector retriever (default: configs/retrieval.yaml)")
     ap.add_argument("--details", action="store_true", help="print per-question ranks")
     args = ap.parse_args()
 
     questions = [q for q in json.loads(QUESTIONS.read_text()) if q.get("expected_chunks")]
     print(f"{len(questions)} labelled questions\n")
 
+    from finsight.retrieval.bm25_retriever import BM25Retriever
+    from finsight.retrieval.hybrid_retriever import HybridRetriever
+    from finsight.retrieval.vector_retriever import VectorRetriever
+
+    bm25 = BM25Retriever()
+    vectors = [VectorRetriever(m) for m in (args.models or [None])]
+    short = lambda r: r.model_name.split("/")[-1][:18]  # noqa: E731
+
     retrievers = {}
     if "bm25" in args.retrievers:
-        from finsight.retrieval.bm25_retriever import BM25Retriever
-        retrievers["bm25"] = BM25Retriever()
+        retrievers["bm25"] = bm25
     if "vector" in args.retrievers:
-        from finsight.retrieval.vector_retriever import VectorRetriever
-        retrievers["vector"] = VectorRetriever()
+        for v in vectors:
+            retrievers[short(v)] = v
+    if "hybrid" in args.retrievers:
+        for v in vectors:
+            retrievers[f"hybrid+{short(v)[:9]}"] = HybridRetriever(bm25, v)
+            for wb, wv in args.rrf_weights or []:
+                retrievers[f"hyb{wb:g}:{wv:g}+{short(v)[:9]}"] = HybridRetriever(bm25, v, bm25_weight=wb, vector_weight=wv)
 
-    header = f"{'retriever':<10}{'mode':<12}" + "".join(f"{m:>9}" for m in [*(f'hit@{k}' for k in KS), "mrr@10"])
+    width = max(10, *(len(n) + 2 for n in retrievers))
+    header = f"{'retriever':<{width}}{'mode':<12}" + "".join(f"{m:>9}" for m in [*(f'hit@{k}' for k in KS), "mrr@10"])
     print(header)
     print("-" * len(header))
     details = {}
@@ -71,7 +89,7 @@ def main():
         for filtered in (False, True):
             mode = "filtered" if filtered else "unfiltered"
             metrics, rows = evaluate(retriever, questions, filtered)
-            print(f"{name:<10}{mode:<12}" + "".join(f"{v:>9.2f}" for v in metrics.values()))
+            print(f"{name:<{width}}{mode:<12}" + "".join(f"{v:>9.2f}" for v in metrics.values()))
             details[(name, mode)] = rows
 
     if args.details:

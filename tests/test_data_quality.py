@@ -66,7 +66,20 @@ def test_question_set_shape(questions):
 def test_retrieval_questions_have_ground_truth(questions):
     for q in questions:
         if q["requires_retrieval"]:
+            assert q["evidence"], f"{q['id']} needs evidence phrases"
             assert q["expected_chunks"], f"{q['id']} needs expected_chunks"
+
+
+def test_expected_chunks_match_evidence(conn, questions):
+    """expected_chunks must equal every chunk containing an evidence phrase.
+    If this fails after re-chunking: uv run scripts/label_evidence.py"""
+    from finsight.evaluation.labels import resolve_evidence
+
+    for q in questions:
+        if q.get("evidence"):
+            keys, missing = resolve_evidence(conn, q["evidence"])
+            assert not missing, f"{q['id']}: phrases not found {missing}"
+            assert keys == q["expected_chunks"], q["id"]
 
 
 def test_expected_chunks_exist(conn, questions):

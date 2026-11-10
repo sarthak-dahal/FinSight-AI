@@ -15,7 +15,7 @@ A local financial research assistant that answers questions about public compani
 
 ---
 
-## Current state: Week 3 baseline done (Phases 0–3) → next is Phase 4 / Week 4
+## Current state: Week 3 + Phase 4 done (hybrid retrieval) → next is Week 4 (the assistant)
 
 ### Roadmap (agreed 2026-11-10)
 
@@ -23,7 +23,7 @@ A local financial research assistant that answers questions about public compani
 - [x] **Phase 1 — Claude Code setup:** `CLAUDE.md`, `.claude/settings.json`, `/session-wrap` skill; migrated to uv (`pyproject.toml` + `uv.lock`)
 - [x] **Phase 2 — Finish Week 1 gap:** 30 verified questions across all 3 companies, retrieval questions labelled with `expected_chunks`; fixed two fact-table bugs found along the way (see Week 2 → "Fact table fixes")
 - [x] **Phase 3 — Week 3 retrieval baseline:** install retrieval packages → `bm25_retriever.py` → `vector_retriever.py` (MiniLM, model name in `configs/retrieval.yaml`) → `build_index.py` → recall@5/@10 eval for both → retriever unit tests
-- [ ] **Phase 4 — Stretch (optional):** compare `bge-small`/`bge-base` vs MiniLM; prototype hybrid (RRF); table-aware chunking if numeric retrieval is weak
+- [x] **Phase 4 — Better retrieval:** bge-base replaces MiniLM; hybrid RRF retriever; evidence-based labels
 - Later (blueprint): Week 4 reranker + Ollama + calculations + citations · Week 5 eval & failure analysis · Week 6 Streamlit, docs, demo
 
 ### Week 1 — Data Acquisition ✅
@@ -138,7 +138,7 @@ Pre-written analytical queries are in `sql/queries.sql`.
 - `vector_retriever.py` — `VectorRetriever()` same API; MiniLM embeddings, FAISS `IndexFlatIP`, refuses to load if index model ≠ config model
 - Every chunk is indexed with a header line ("NVIDIA CORP (NVDA) fiscal year 2026 10-K, Risk Factors.") because filing text rarely names the company
 
-**Scripts:** `scripts/build_index.py` (8 s: writes `data/index/` + `filing_chunks.embedding`), `scripts/eval_retrieval.py [--details]`
+**Scripts:** `scripts/build_index.py` (writes `data/index/<model>/` + `filing_chunks.embedding`; ~80 s for bge-base), `scripts/eval_retrieval.py [--details]`
 
 **Baseline** — 16 labelled questions; hit@k = an expected chunk is in the top k:
 
@@ -158,11 +158,36 @@ Pre-written analytical queries are in `sql/queries.sql`.
 
 ---
 
-## What's next: Phase 4 (optional stretch) → Week 4
+### Phase 4 — Better retrieval ✅
 
-1. Fix truncation: try `BAAI/bge-small-en-v1.5` (512 tokens) and/or ~200-word chunks; compare with `eval_retrieval.py`
-2. Hybrid search (reciprocal rank fusion of BM25 + vector)
-3. Week 4: query parser (ticker/year), reranker, Ollama LLM, calculation tools, citations
+- **Embedding model → `BAAI/bge-base-en-v1.5`** (512 tokens, 768-dim). Indexes now live per model in `data/index/<model-slug>/`; `build_index.py --model X` and `eval_retrieval.py --models A B` compare models side by side. BGE needs a query instruction prefix (handled in `vector_retriever.QUERY_PREFIXES`).
+- **`hybrid_retriever.py`** — Reciprocal Rank Fusion of BM25 + vector (k=60, equal weights, 50 candidates each; deliberately untuned).
+- **Evidence-based labels.** Questions now store exact `evidence` phrases; `scripts/label_evidence.py` derives `expected_chunks` = every chunk containing them. Fixed 4 under-labelled questions (overlapping chunks and repeated facts held the answer too — sq_028 was never really failing). Rerun after any re-chunking; a test enforces sync.
+
+**Results** (16 labelled questions, corrected labels):
+
+| Retriever | Filtered hit@1 | hit@3 | hit@5 | MRR | Unfiltered hit@3 | Unfiltered hit@5 |
+|---|---|---|---|---|---|---|
+| BM25 | 0.38 | 0.88 | 1.00 | 0.59 | 0.19 | 0.56 |
+| MiniLM | 0.44 | 0.69 | 0.75 | 0.56 | 0.44 | 0.56 |
+| bge-small | 0.75 | 0.81 | 0.94 | 0.80 | 0.75 | 0.75 |
+| bge-base | **0.69** | 0.88 | 1.00 | **0.79** | 0.75 | 0.88 |
+| **Hybrid (BM25 + bge-base)** — default | 0.50 | **1.00** | 1.00 | 0.72 | **0.94** | **1.00** |
+
+**Takeaways**
+- Hybrid is the most robust (right passage in top 3 for every question, even unfiltered); bge-base alone ranks the answer *first* more often → a cross-encoder reranker over hybrid's top ~20 should get both (Week 4).
+- **The eval set is now saturated and optimistic.** 16 questions, written after reading the passages, so wording overlaps the text. Differences of 0.06 = one question. Before tuning further, add ~25 harder retrieval questions (paraphrased, older years, risk factors, AAPL/MSFT FY2024–25).
+- Chunk size (400 words) left unchanged: with 512-token models it fits, and changing it would need re-labelling (now automatic via evidence phrases).
+
+---
+
+## What's next: Week 4 — the assistant
+
+1. **Query parser** — extract ticker(s), fiscal year(s), and question type (numeric vs narrative) from the question; feed as retrieval filters
+2. **Reranker** — cross-encoder (e.g. `BAAI/bge-reranker-base`) over hybrid top 20 → top 5
+3. **Tools** — SQL lookups + Python calculations (margins, growth) over `financial_facts`, so the LLM never does arithmetic
+4. **LLM via Ollama** — answer from retrieved chunks + tool results, with citations (accession, section); abstain when evidence is missing
+5. Harder retrieval questions (see takeaways) before tuning anything
 
 ## Dependencies
 
@@ -199,7 +224,7 @@ uv run pytest
 
 ## Tests
 
-23 passing (`uv run pytest`):
+29 passing (`uv run pytest`):
 - `test_ingestion_simple.py` — 6 smoke tests (files, manifests, DB populated)
-- `test_data_quality.py` — 6 data tests (one fact per year, restated EPS, known revenues, eval-set labels exist in DB)
-- `test_retrieval.py` — 11 retriever tests (tokenizer, filters, ordering, known answers, index ↔ DB alignment); vector tests skip if the index isn't built
+- `test_data_quality.py` — 7 data tests (one fact per year, restated EPS, known revenues, labels exist in DB and match evidence phrases)
+- `test_retrieval.py` — 17 retriever tests (tokenizer, filters, ordering, known answers, hybrid fusion, index ↔ DB alignment); vector/hybrid tests skip if the index isn't built

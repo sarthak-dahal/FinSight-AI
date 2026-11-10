@@ -1,15 +1,24 @@
-# Retrieval settings (Week 3). Paths are relative to the project root.
+# Retrieval settings. Paths are relative to the project root.
 db_path: data/finsight.db
-index_dir: data/index
+index_dir: data/index          # one subfolder per embedding model
 
-# Dense retriever. Changing the model requires: python scripts/build_index.py
-embedding_model: sentence-transformers/all-MiniLM-L6-v2
+# Dense retriever. After changing the model: uv run scripts/build_index.py
+# Compared 2026-11-10 (see PROGRESS.md): bge-base > bge-small > MiniLM (MiniLM truncates at 256 tokens).
+embedding_model: BAAI/bge-base-en-v1.5
 embedding_batch_size: 32
 
 # BM25 parameters (rank_bm25 defaults)
 bm25:
   k1: 1.5
   b: 0.75
+
+# Hybrid = Reciprocal Rank Fusion of BM25 + vector. Defaults deliberately untuned:
+# with 16 labelled questions, weight tuning would just overfit.
+hybrid:
+  k_rrf: 60            # standard RRF constant
+  bm25_weight: 1.0
+  vector_weight: 1.0
+  candidates: 50       # results taken from each retriever before fusing
 
 # Default number of chunks returned
 top_k: 10

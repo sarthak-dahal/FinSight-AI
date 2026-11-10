@@ -30,13 +30,20 @@ def bm25():
 
 @pytest.fixture(scope="module")
 def vector():
-    if not (load_config()["index_dir"] / "faiss.index").exists():
-        pytest.skip("index not built (scripts/build_index.py)")
-    from finsight.retrieval.vector_retriever import VectorRetriever
+    from finsight.retrieval.vector_retriever import VectorRetriever, index_dir_for
+
+    if not (index_dir_for(load_config()["embedding_model"]) / "faiss.index").exists():
+        pytest.skip("index not built (uv run scripts/build_index.py)")
     return VectorRetriever()
 
 
-@pytest.mark.parametrize("name", ["bm25", "vector"])
+@pytest.fixture(scope="module")
+def hybrid(bm25, vector):
+    from finsight.retrieval.hybrid_retriever import HybridRetriever
+    return HybridRetriever(bm25, vector)
+
+
+@pytest.mark.parametrize("name", ["bm25", "vector", "hybrid"])
 def test_filters_are_respected(name, request):
     retriever = request.getfixturevalue(name)
     results = retriever.search("revenue growth drivers", k=10, ticker="AAPL", fiscal_year="2025", section_id="7")
@@ -45,14 +52,14 @@ def test_filters_are_respected(name, request):
                for r in results)
 
 
-@pytest.mark.parametrize("name", ["bm25", "vector"])
+@pytest.mark.parametrize("name", ["bm25", "vector", "hybrid"])
 def test_list_filters(name, request):
     retriever = request.getfixturevalue(name)
     results = retriever.search("operating margin", k=30, ticker=["NVDA", "MSFT"])
     assert {r.chunk.ticker for r in results} <= {"NVDA", "MSFT"}
 
 
-@pytest.mark.parametrize("name", ["bm25", "vector"])
+@pytest.mark.parametrize("name", ["bm25", "vector", "hybrid"])
 def test_ranks_and_scores_are_ordered(name, request):
     results = request.getfixturevalue(name).search("cybersecurity governance board", k=5)
     assert [r.rank for r in results] == [1, 2, 3, 4, 5]
@@ -74,3 +81,18 @@ def test_vector_known_answer(vector):
     results = vector.search("How does Microsoft's board oversee cybersecurity risk?", k=3,
                             ticker="MSFT", fiscal_year="2026")
     assert "0001193125-26-323660|1C|0" in [r.chunk.key for r in results]
+
+
+def test_hybrid_fuses_both_retrievers(hybrid):
+    """A chunk found by both retrievers should outrank one found by only one."""
+    results = hybrid.search("How does Microsoft's board oversee cybersecurity risk?", k=5,
+                            ticker="MSFT", fiscal_year="2026")
+    assert results[0].chunk.key in {"0001193125-26-323660|1C|0", "0001193125-26-323660|1C|1"}  # sq_025 labels
+    assert results[0].score > 1 / 61  # more than a single first-place vote
+
+
+def test_vector_refuses_missing_index():
+    from finsight.retrieval.vector_retriever import VectorRetriever
+
+    with pytest.raises(FileNotFoundError):
+        VectorRetriever("not-a-real/model")

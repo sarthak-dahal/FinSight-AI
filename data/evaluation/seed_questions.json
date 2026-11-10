@@ -10,6 +10,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — us-gaap:Revenues, period 2025-01-27 to 2026-01-25",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -23,6 +24,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — us-gaap:OperatingIncomeLoss / us-gaap:Revenues",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -36,6 +38,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — us-gaap:ResearchAndDevelopmentExpense / us-gaap:Revenues",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -49,6 +52,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — us-gaap:Revenues across period_end 2024-01-28 and 2026-01-25",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -62,6 +66,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — OperatingIncomeLoss / Revenues for both periods",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -75,6 +80,16 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — Item 1 'Our Businesses' and Item 7 overview",
+    "evidence": [
+      {
+        "filing": "0001045810-26-000021",
+        "text": "We report our business results in two segments"
+      },
+      {
+        "filing": "0001045810-26-000021",
+        "text": "Our two operating segments are \"Compute & Networking\" and \"Graphics.\""
+      }
+    ],
     "expected_chunks": [
       "0001045810-26-000021|1|3",
       "0001045810-26-000021|7|0"
@@ -91,6 +106,12 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — Item 7 'Recent Developments, Future Objectives and Challenges'",
+    "evidence": [
+      {
+        "filing": "0001045810-26-000021",
+        "text": "Revenue growth in fiscal year 2026 was driven by data center compute and networking platforms"
+      }
+    ],
     "expected_chunks": [
       "0001045810-26-000021|7|0"
     ]
@@ -106,9 +127,20 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — Item 1A customer concentration risk factor",
+    "evidence": [
+      {
+        "filing": "0001045810-26-000021",
+        "text": "sales to one direct customer represented 22% of total revenue"
+      },
+      {
+        "filing": "0001045810-26-000021",
+        "text": "we estimate some individually representing 10% or more of our revenue"
+      }
+    ],
     "expected_chunks": [
       "0001045810-26-000021|1A|26",
-      "0001045810-26-000021|1A|27"
+      "0001045810-26-000021|1A|27",
+      "0001045810-26-000021|7|9"
     ]
   },
   {
@@ -122,6 +154,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — NetIncomeLoss / Revenues, period 2024-01-29 to 2025-01-26",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -135,6 +168,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "unanswerable — no future period data exists in the dataset",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -148,6 +182,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — Revenues FY2025, FY2026",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -161,6 +196,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — GrossProfit / Revenues",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -174,6 +210,12 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — ResearchAndDevelopmentExpense; Item 7 operating expenses table",
+    "evidence": [
+      {
+        "filing": "0000320193-26-000026",
+        "text": "Research and development $ 45,765"
+      }
+    ],
     "expected_chunks": [
       "0000320193-26-000026|7|4"
     ]
@@ -189,6 +231,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — OperatingIncomeLoss / Revenues",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -202,6 +245,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — PaymentsToAcquirePropertyPlantAndEquipment",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -215,6 +259,12 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "financial_facts — NetIncomeLoss; Item 7 OpenAI impact",
+    "evidence": [
+      {
+        "filing": "0001193125-26-323660",
+        "text": "Current year net income and diluted EPS were positively impacted by net gains from investments in OpenAI"
+      }
+    ],
     "expected_chunks": [
       "0001193125-26-323660|7|4"
     ]
@@ -230,6 +280,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — OperatingIncomeLoss / Revenues for all three",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -243,6 +294,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — ResearchAndDevelopmentExpense / Revenues for all three",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -256,6 +308,7 @@
     "requires_retrieval": false,
     "verified": true,
     "source": "financial_facts — EarningsPerShareDiluted as restated in the FY2025/FY2026 10-Ks",
+    "evidence": [],
     "expected_chunks": []
   },
   {
@@ -269,6 +322,12 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — Item 7 'Fiscal Year 2026 Compared with Fiscal Year 2025'",
+    "evidence": [
+      {
+        "filing": "0001193125-26-323660",
+        "text": "Revenue increased $50.1 billion or 18% driven by growth in Microsoft Cloud"
+      }
+    ],
     "expected_chunks": [
       "0001193125-26-323660|7|3",
       "0001193125-26-323660|7|4"
@@ -285,6 +344,12 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — Item 7 Intelligent Cloud segment results",
+    "evidence": [
+      {
+        "filing": "0001193125-26-323660",
+        "text": "Azure and other cloud services revenue grew 41%"
+      }
+    ],
     "expected_chunks": [
       "0001193125-26-323660|7|6"
     ]
@@ -300,6 +365,12 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — FY2024 10-K Item 7 (tests fiscal-year filtering against sq_021)",
+    "evidence": [
+      {
+        "filing": "0000950170-24-087843",
+        "text": "Azure and other cloud services revenue grew 30%"
+      }
+    ],
     "expected_chunks": [
       "0000950170-24-087843|7|8"
     ]
@@ -315,6 +386,12 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — Item 1 'Operating Segments'",
+    "evidence": [
+      {
+        "filing": "0001193125-26-323660",
+        "text": "using three segments: Productivity and Business Processes, Intelligent Cloud, and More Personal Computing"
+      }
+    ],
     "expected_chunks": [
       "0001193125-26-323660|1|1",
       "0001193125-26-323660|1|2"
@@ -331,6 +408,16 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — Item 7 OpenAI impact",
+    "evidence": [
+      {
+        "filing": "0001193125-26-323660",
+        "text": "Current year net income and diluted EPS were positively impacted by net gains from investments in OpenAI"
+      },
+      {
+        "filing": "0001193125-26-323660",
+        "text": "exclude net gains and losses from investments in OpenAI"
+      }
+    ],
     "expected_chunks": [
       "0001193125-26-323660|7|3",
       "0001193125-26-323660|7|4"
@@ -347,6 +434,16 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — Item 1C Governance",
+    "evidence": [
+      {
+        "filing": "0001193125-26-323660",
+        "text": "Our Board of Directors oversees cybersecurity risk"
+      },
+      {
+        "filing": "0001193125-26-323660",
+        "text": "escalation process in place to inform senior management and the Board"
+      }
+    ],
     "expected_chunks": [
       "0001193125-26-323660|1C|0",
       "0001193125-26-323660|1C|1"
@@ -363,6 +460,12 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — Item 7 'Products and Services Performance'",
+    "evidence": [
+      {
+        "filing": "0000320193-26-000026",
+        "text": "iPhone net sales increased during 2026 compared to 2025 due to higher net sales of Pro models"
+      }
+    ],
     "expected_chunks": [
       "0000320193-26-000026|7|3"
     ]
@@ -378,6 +481,12 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — Item 7 'Segment Operating Performance'",
+    "evidence": [
+      {
+        "filing": "0000320193-26-000026",
+        "text": "Greater China 82,378"
+      }
+    ],
     "expected_chunks": [
       "0000320193-26-000026|7|2"
     ]
@@ -393,8 +502,15 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — Item 1 'Human Capital Management'",
+    "evidence": [
+      {
+        "filing": "0001045810-26-000021",
+        "text": "approximately 42,000 employees"
+      }
+    ],
     "expected_chunks": [
-      "0001045810-26-000021|1|18"
+      "0001045810-26-000021|1|18",
+      "0001045810-26-000021|1|19"
     ]
   },
   {
@@ -408,7 +524,14 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "unanswerable — no unit data in filings; a good answer may cite iPhone net sales instead",
+    "evidence": [
+      {
+        "filing": "0000320193-26-000026",
+        "text": "iPhone $ 254,098"
+      }
+    ],
     "expected_chunks": [
+      "0000320193-26-000026|7|2",
       "0000320193-26-000026|7|3"
     ]
   },
@@ -423,8 +546,16 @@
     "requires_retrieval": true,
     "verified": true,
     "source": "filing_chunks — FY2024 10-K Item 7",
+    "evidence": [
+      {
+        "filing": "0001045810-24-000029",
+        "text": "from 19% in fiscal year 2023 to 14% in fiscal year 2024"
+      }
+    ],
     "expected_chunks": [
-      "0001045810-24-000029|7|2"
+      "0001045810-24-000029|1A|16",
+      "0001045810-24-000029|7|2",
+      "0001045810-24-000029|7|3"
     ]
   }
 ]

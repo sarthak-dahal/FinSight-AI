@@ -1,9 +1,9 @@
 """Dense vector retriever: Sentence Transformers embeddings + FAISS inner-product index.
 
 Embeddings are L2-normalised, so inner product == cosine similarity.
-Index files (written by scripts/build_index.py):
-    data/index/faiss.index   — FAISS IndexFlatIP
-    data/index/chunks.json   — chunk keys in index order + the model that built it
+Each model gets its own index folder (written by scripts/build_index.py):
+    data/index/<model-slug>/faiss.index   — FAISS IndexFlatIP
+    data/index/<model-slug>/chunks.json   — chunk keys in index order + model settings
 """
 
 from __future__ import annotations
@@ -21,6 +21,17 @@ from finsight.retrieval.common import Chunk, SearchResult, load_chunks, load_con
 
 INDEX_FILE = "faiss.index"
 META_FILE = "chunks.json"
+
+# Some retrieval models are trained with an instruction prepended to queries (not passages).
+QUERY_PREFIXES = {
+    "BAAI/bge-small-en-v1.5": "Represent this sentence for searching relevant passages: ",
+    "BAAI/bge-base-en-v1.5": "Represent this sentence for searching relevant passages: ",
+}
+
+
+def index_dir_for(model_name: str, cfg: dict | None = None) -> Path:
+    cfg = cfg or load_config()
+    return cfg["index_dir"] / model_name.replace("/", "__")
 
 
 def load_model(model_name: str):
@@ -45,34 +56,35 @@ def build_index(chunks: list[Chunk], model, model_name: str, index_dir: Path, ba
         "model": model_name,
         "dim": int(vecs.shape[1]),
         "max_seq_length": int(model.max_seq_length),
+        "query_prefix": QUERY_PREFIXES.get(model_name, ""),
         "keys": [c.key for c in chunks],
     }))
     return vecs
 
 
 class VectorRetriever:
-    def __init__(self, model=None):
+    def __init__(self, model_name: str | None = None, model=None):
         cfg = load_config()
-        index_dir = cfg["index_dir"]
+        model_name = model_name or cfg["embedding_model"]
+        index_dir = index_dir_for(model_name, cfg)
         if not (index_dir / INDEX_FILE).exists():
-            raise FileNotFoundError(f"No index in {index_dir}. Run: python scripts/build_index.py")
+            raise FileNotFoundError(
+                f"No index for {model_name} in {index_dir}. Run: uv run scripts/build_index.py --model {model_name}"
+            )
 
         meta = json.loads((index_dir / META_FILE).read_text())
-        if meta["model"] != cfg["embedding_model"]:
-            raise RuntimeError(
-                f"Index was built with {meta['model']} but config says {cfg['embedding_model']}. "
-                "Rebuild with: python scripts/build_index.py"
-            )
+        self.model_name = meta["model"]
+        self.query_prefix = meta.get("query_prefix", "")
         self.index = faiss.read_index(str(index_dir / INDEX_FILE))
         by_key = {c.key: c for c in load_chunks(cfg["db_path"])}
         missing = [k for k in meta["keys"] if k not in by_key]
-        if missing:
-            raise RuntimeError(f"{len(missing)} indexed chunks no longer in DB; rebuild the index.")
+        if missing or len(by_key) != len(meta["keys"]):
+            raise RuntimeError("Index is out of sync with the DB; rebuild it with scripts/build_index.py.")
         self.chunks = [by_key[k] for k in meta["keys"]]
-        self.model = model or load_model(meta["model"])
+        self.model = model or load_model(self.model_name)
 
     def search(self, query: str, k: int = 10, ticker=None, fiscal_year=None, section_id=None) -> list[SearchResult]:
-        qvec = embed(self.model, [query])
+        qvec = embed(self.model, [self.query_prefix + query])
         # Flat index over ~1k vectors: score everything, then filter. Exact and fast.
         scores, ids = self.index.search(qvec, self.index.ntotal)
         results = []
